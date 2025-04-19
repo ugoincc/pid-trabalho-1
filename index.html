@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Processamento de Imagens</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display+SC:ital,wght@0,400..900;1,400..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="./css/styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+
+  <body>
+    <h1 class="titulo">Processamento de Imagens</h1>
+    <div class="authors">
+      <p>Hugo Cordeiro</p>
+      <p>Renan Batalha</p>
+      <p>Kelyton Lacerda</p>
+    </div>
+
+    <div class="content-wrapper">
+      <div class="base-wrapper">
+        <h2 class="single-output">Imagem base</h2>
+        <!--Referenciar Imagem a ser processada aqui! -->
+        <!--As imagens de saída (placeholders) serão substituídas pelo script -->
+        <img src="assets/imagemBase.jpg" />
+      </div>
+
+      <div class="output-wrapper">
+        <div class="single-output">
+          <h2>Escala de Cinza</h2>
+          <p>Conversão de cada pixel para tons de cinza (média de R, G e B)</p>
+          <img src="assets/placeholder.jpg" />
+        </div>
+        <div class="single-output">
+          <h2>Preto e Branco</h2>
+          <p>Binarização fixa</p>
+          <p>Imagem apenas preto e branco -- limiar 128.</p>
+          <img src="assets/placeholder.jpg" />
+        </div>
+        <div class="single-output">
+          <h2>Quantização</h2>
+          <p>
+            Reduz o número de níveis de cinza, agrupando valores em 'n' níveis.
+          </p>
+          <p>
+            Slider: Permite selecionar quantos níveis (2 - 16) -- Quanto maior,
+            mais detalhes.
+          </p>
+          <img src="assets/placeholder.jpg" />
+        </div>
+        <div class="single-output">
+          <h2>Limiarização</h2>
+          <p>Binarização com escolha de ponto de corte</p>
+          <p>
+            Slider: Permite escolher o limiar entre 0 a 255 -- Pixels acima
+            viram branco, pixels abaixo viram preto.
+          </p>
+
+          <img src="assets/placeholder.jpg" />
+        </div>
+        <div class="single-output">
+          <h2>Histograma</h2>
+          <p>
+            Gráfico de barras que mostra quantos pixels existem em cada nivel de
+            cinza (0 a 255)
+          </p>
+          <img src="assets/placeholder.jpg" />
+        </div>
+
+        <div class="single-output">
+          <h2>Passa alta</h2>
+          <p>Destaca bordas e detalhes, realçando contornos sobre a imagem</p>
+          <img src="assets/placeholder.jpg" />
+        </div>
+
+        <div class="single-output">
+          <h2>Passa Baixa</h2>
+          <p>Suaviza (borrão), atenuando ruídos e detalhes finos</p>
+          <p>
+            Slider: Define a intensidade do blur (1 a 25) -- Quanto maior o
+            valor, mais borrada a imagem.
+          </p>
+          <img src="assets/placeholder.jpg" />
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
