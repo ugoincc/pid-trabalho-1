@@ -5,13 +5,13 @@ Este projeto demonstra filtros de imagem (escala de cinza, limiarização, quant
 ## Estrutura
 
 /
-├─ index.html
-├─ script.js
-├─ css/
-│ └─ styles.css
-└─ assets/
-└─ imagemBase.jpg
-└─ placeholder.jpg
+├─ index.html<br/>
+├─ script.js<br/>
+├─ css/<br/>
+│ └─ styles.css<br/>
+└─ assets/<br/>
+└─ imagemBase.jpg<br/>
+└─ placeholder.jpg<br/>
 
 ## Como rodar
 
@@ -50,12 +50,12 @@ http://localhost:8080
 
 ### 4. Live Server (VS Code)
 
-1 - Abra a pasta no VS Code
-2 - Instale a extensão Live Server
-3 - Clique em "Go Live" no canto inferior direito
+1 - Abra a pasta no VS Code<br/>
+2 - Instale a extensão Live Server<br/>
+3 - Clique em "Go Live" no canto inferior direito<br/>
 4 - O navegador abrirá com a URL do servidor
 
 ## Opções:
 
-Para alterar a imagem a ser processada, referenciar o endereço da imagem na linha indicada dentro de "index.html";
+Para alterar a imagem a ser processada, referenciar o endereço da imagem na linha indicada dentro de "index.html"; <br/>
 Alguns filtros possuem sliders para alterar os parâmetros de visualização;
