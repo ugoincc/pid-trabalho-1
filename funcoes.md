@@ -1,0 +1,3 @@
+# Exemplo
+
+Como funciona, qual a operação, metodos, ideia, saída esperada etc...
