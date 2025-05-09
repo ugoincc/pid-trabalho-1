@@ -11,7 +11,7 @@
           K1 = [+1 0]
                [0 -1]
 
--Kernel 2
+- Kernel 2
 
           K2 = [0 +1]
                [-1 0]
@@ -50,7 +50,7 @@ Resultado = √(-190)^2 +(190)^2
 
 - O valor resultante passa a ser 268.7. Assim, os valores envolta são perdidos
 
-[268.7]
+               Matriz Resultante[268.7]
 
 
 ### Prewitt
