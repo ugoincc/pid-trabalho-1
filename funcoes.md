@@ -4,7 +4,7 @@
 
 ## Roberts
 ## 🥾 Passo a Passo:
-1) O filtro de Roberts utiliza duas máscaras/kernel (2x2):
+### 1) O filtro de Roberts utiliza duas máscaras/kernel (2x2):
 
 - Kernel 1
 
@@ -16,7 +16,7 @@
           K2 = [0 +1]
                [-1 0]
 
-2) Ele é aplicado item por item da seguinte forma:
+## 2) Ele é aplicado item por item da seguinte forma:
 
 - Vamos exemplificar uma matriz 4x4 que deverá ser processada:
 
@@ -50,7 +50,7 @@ Resultado = √(-190)^2 +(190)^2
 
 - O valor resultante passa a ser 268.7. Assim, os valores envolta são perdidos
 
-               Matriz Resultante[268.7]
+               Matriz Resultante -> [268.7]
 
 
 ### Prewitt
