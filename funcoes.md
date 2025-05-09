@@ -20,7 +20,7 @@
 
 - Vamos exemplificar uma matriz 4x4 que deverá ser processada:
 
-          Ex1= [10 200]
+          Ex1 = [10 200]
                [10 200]
 
 - O kernel 1 é aplicado
@@ -46,7 +46,8 @@
           N2 = 190
 
 - Os valores de N1 e N2 são aplicados para a seguinte fórmula:
-Resultado = √(-190)^2 +(190)^2
+
+     Resultado = √(N1)^2 +(N2)^2
 
 - O valor resultante passa a ser 268.7. Assim, os valores envolta são perdidos
 
