@@ -32,10 +32,6 @@ A limiarização gaussiana utiliza uma **média ponderada** com base em uma fun�
 **Robustez a Ruído:**  
 É mais robusta a ruídos e outliers do que a limiarização por média, pois o peso reduzido dos pixels distantes minimiza sua influência no resultado.
 
----
-
-> **Resumo:** A limiarização adaptativa, especialmente a gaussiana, é essencial em imagens com variação de luz, permitindo segmentações mais precisas e resistentes a ruídos.
-
 # Escala de Cinza
 
 ## Composição de Imagens Coloridas
