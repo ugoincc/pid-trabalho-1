@@ -36,21 +36,38 @@ A limiarização gaussiana utiliza uma **média ponderada** com base em uma fun�
 
 > **Resumo:** A limiarização adaptativa, especialmente a gaussiana, é essencial em imagens com variação de luz, permitindo segmentações mais precisas e resistentes a ruídos.
 
-## Escala de Cinza 
+# Escala de Cinza
 
-Uma imagem colorida é formada por 3 camadas:
+## Composição de Imagens Coloridas
 
-Vermelho (R),
+Uma **imagem colorida** é composta por **três canais de cor**:
+- **Vermelho (R)**
+- **Verde (G)**
+- **Azul (B)**
 
-Verde (G),
+## Funcionamento da Escala de Cinza
 
-Azul (B).
+### O que a escala de cinza faz?
 
-Cada pixel tem três valores, um para cada cor. Exemplo: pixel = [123, 85, 201]  # R=123, G=85, B=201
-Então... como decidir se esse pixel deve virar preto ou branco?
-Não dá para comparar diretamente esse trio com um valor de limiar como "127", por exemplo.
+A escala de cinza transforma um pixel colorido em um único valor numérico que representa o nível de brilho (luminosidade).
 
- O que a escala de cinza faz?
-Ela transforma o pixel colorido em um único número, que representa o nível de brilho (luminosidade).
-Assim, o pixel [123, 85, 201] viraria algo como:
-cinza ≈ 115
+**Exemplo:**
+Um pixel colorido `[123, 85, 201]` (onde R = 123, G = 85, B = 201) seria convertido para um valor aproximado de `115` em escala de cinza.
+
+### Método de Conversão
+
+A conversão é realizada através de uma média ponderada que considera a sensibilidade do olho humano a cada canal de cor.
+
+#### Fórmula de Luma
+
+```
+cinza = 0.299 * R + 0.587 * G + 0.114 * B
+```
+
+Esta fórmula atribui diferentes pesos a cada canal de cor:
+- O canal verde recebe o maior peso (0.587) devido à maior sensibilidade do olho humano a esta cor
+- O canal vermelho recebe um peso intermediário (0.299)
+- O canal azul recebe o menor peso (0.114)
+
+Ao aplicar essa ponderação, a escala de cinza resultante preserva melhor a percepção humana de luminosidade da imagem original.
+

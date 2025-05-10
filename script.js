@@ -39,13 +39,13 @@ function handleImageFunction(selectedFunction) {
       invert_color();
       break;
     case "fun2":
-      applyFunction2();
+      grayscale();
       break;
     case "fun3":
-      applyFunction3();
+      
       break;
     case "fun4":
-      applyFunction4();
+      
       break;
     default:
       const para = document.createElement("p");
@@ -96,32 +96,40 @@ function invert_color() {
   };
 }
 
-function applyFunction2() {
-  const alteredImg = document.createElement("img");
-  alteredImg.src = URL.createObjectURL(curFile);
-  alteredImg.alt = alteredImg.title;
-  preview.appendChild(alteredImg);
-  const para = document.createElement("p");
-  para.textContent = "Função 2 aplicada!";
-  preview.appendChild(para);
-}
-
-function applyFunction3() {
-  const alteredImg = document.createElement("img");
-  alteredImg.src = URL.createObjectURL(curFile);
-  alteredImg.alt = alteredImg.title;
-  preview.appendChild(alteredImg);
-  const para = document.createElement("p");
-  para.textContent = "Função 3 aplicada!";
-  preview.appendChild(para);
-}
-
-function applyFunction4() {
-  const alteredImg = document.createElement("img");
-  alteredImg.src = URL.createObjectURL(curFile);
-  alteredImg.alt = alteredImg.title;
-  preview.appendChild(alteredImg);
-  const para = document.createElement("p");
-  para.textContent = "Função 4 aplicada!";
-  preview.appendChild(para);
+function escala_de_cinza() {
+  const canvas = document.createElement("canvas");
+  canvas.classList.add("styled-canva");
+  const context = canvas.getContext("2d");
+  const img = new Image();
+  img.src = URL.createObjectURL(curFile);
+  
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    context.drawImage(img, 0, 0);
+    
+    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const data = imageData.data;
+    
+    // Converte para escala de cinza usando a fórmula luma
+    for (let i = 0; i < data.length; i += 4) {
+      // Aplica a fórmula luma: Y = 0.299R + 0.587G + 0.114B
+      // Esta fórmula considera a sensibilidade do olho humano aos diferentes canais de cor
+      const luma = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
+      
+      // Define o mesmo valor para R, G e B
+      data[i] = luma;     // Red
+      data[i + 1] = luma; // Green
+      data[i + 2] = luma; // Blue
+      // Não alteramos o canal Alpha (i + 3)
+    }
+    
+    context.putImageData(imageData, 0, 0);
+    preview.appendChild(canvas);
+    
+    const downloadContainer = document.querySelector(".download-container");
+    downloadContainer.innerHTML = "";
+    const downloadLink = createDownloadLink(canvas, "grayscale_image.png");
+    downloadContainer.appendChild(downloadLink);
+  };
 }
