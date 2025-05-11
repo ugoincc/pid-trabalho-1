@@ -1,8 +1,9 @@
 # 📒 Documentacao de Funcoes
 
-### Passa-Baixa Mediana
+# ♦ Passa-Baixa Mediana
 
-## ♦ Roberts
+# ♦ Roberts
+- Conceito Principal: Realçar Bordas
 ## 🥾 Passo a Passo:
 ### 1) O filtro de Roberts utiliza duas máscaras/kernel (2x2):
 
@@ -47,7 +48,7 @@
 
 - Os valores de N1 e N2 são aplicados para a seguinte fórmula:
 
-     Resultado = √(N1)^2 +(N2)^2
+          Resultado = √(N1)^2 +(N2)^2
 
 - O valor resultante passa a ser 268.7. Assim, os valores envolta são perdidos
 

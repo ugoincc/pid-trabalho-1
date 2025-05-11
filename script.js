@@ -39,7 +39,7 @@ function handleImageFunction(selectedFunction) {
       invert_color();
       break;
     case "fun2":
-      applyFunction2();
+      applyRobertsFilter();
       break;
     case "fun3":
       applyFunction3();
@@ -61,7 +61,35 @@ function createDownloadLink(canvas, filename = "imagem.png") {
   downloadLink.textContent = "Download da Imagem";
   downloadLink.classList = "custom-button";
 
-  return downloadLink;
+  return downloadLink;  
+}
+// Funcao para transformar o vetor de dados em uma matriz de pixels, onde cada pixel e um objeto com propriedades red, green, blue e gray
+// pre-condicao: data e um vetor de dados de imagem e width e height sao as dimensoes da imagem
+// pos-condicao: retorna uma matriz de pixels
+function transformDataVectorToMatrix(data, width, height) {
+  const matrix = [];
+  for (let i = 0; i < height; i++) {
+    const row = [];
+    for (let j = 0; j < width; j++) {
+
+      const index = (i * width + j) * 4;
+      const red = data[index];
+      const green = data[index + 1];
+      const blue = data[index + 2];
+      const gray = 0.299 * red + 0.587 * green + 0.114 * blue;
+
+      const pixel = {
+        red: red,
+        green: green,
+        blue: blue,
+        gray: gray,
+      };
+
+      row.push(pixel);
+    }
+    matrix.push(row);
+  }
+  return matrix;
 }
 
 function invert_color() {
@@ -96,14 +124,65 @@ function invert_color() {
   };
 }
 
-function applyFunction2() {
-  const alteredImg = document.createElement("img");
-  alteredImg.src = URL.createObjectURL(curFile);
-  alteredImg.alt = alteredImg.title;
-  preview.appendChild(alteredImg);
-  const para = document.createElement("p");
-  para.textContent = "Função 2 aplicada!";
-  preview.appendChild(para);
+function applyRobertsFilter() {
+  const canvas = document.createElement("canvas");
+  canvas.classList.add("styled-canva");
+  const context = canvas.getContext("2d");
+  const img = new Image();
+  img.src = URL.createObjectURL(curFile);
+
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    context.drawImage(img, 0, 0);
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    const imageData = context.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    const output = new Uint8ClampedArray(data.length);
+    const matrix[] = transformDataVectorToMatrix(data,width,height);
+
+    const kernel1 = [
+      [-1, 0],
+      [0, 1],
+    ];
+
+    const kernel2 = [
+      [0, -1],
+      [1, 0],
+    ];
+
+    for (let i = 0; i < height - 1; i++) {
+      for(let j = 0; j < width - 1; j++){
+      
+      // mainDiagonal1
+      matrix[i][j].gray * kernel1[0][0] +
+      // secondaryDiagonal1   
+      matrix[i][j + 1].gray * kernel1[0][1] +
+      // secondaryDiagonal2
+      matrix[i + 1][j].gray * kernel1[1][0] +
+      // mainDiagonal2
+      matrix[i + 1][j + 1].gray * kernel1[1][1];  
+
+       
+
+
+      }
+
+    
+    }
+
+    const resultImage = new ImageData(output, width, height);
+    context.putImageData(resultImage, 0, 0);
+    preview.appendChild(canvas);
+
+    const downloadContainer = document.querySelector(".download-container");
+    downloadContainer.innerHTML = "";
+    const downloadLink = createDownloadLink(canvas, "roberts_filtered.png");
+    downloadContainer.appendChild(downloadLink);
+  };
 }
 
 function applyFunction3() {
