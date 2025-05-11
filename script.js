@@ -142,7 +142,7 @@ function applyRobertsFilter() {
     const imageData = context.getImageData(0, 0, width, height);
     const data = imageData.data;
     const output = new Uint8ClampedArray(data.length);
-    const matrix[] = transformDataVectorToMatrix(data,width,height);
+    const matrix = transformDataVectorToMatrix(data, width, height);
 
     const kernel1 = [
       [-1, 0],
@@ -154,25 +154,60 @@ function applyRobertsFilter() {
       [1, 0],
     ];
 
+    const magnitudeMatrix = [];
     for (let i = 0; i < height - 1; i++) {
+      const row = [];
       for(let j = 0; j < width - 1; j++){
       
-      // mainDiagonal1
-      matrix[i][j].gray * kernel1[0][0] +
-      // secondaryDiagonal1   
-      matrix[i][j + 1].gray * kernel1[0][1] +
-      // secondaryDiagonal2
-      matrix[i + 1][j].gray * kernel1[1][0] +
-      // mainDiagonal2
-      matrix[i + 1][j + 1].gray * kernel1[1][1];  
+        const G1 = (
+        // mainDiagonal1
+        matrix[i][j].gray * kernel1[0][0] +
+        // secondaryDiagonal1   
+        matrix[i][j + 1].gray * kernel1[0][1] +
+        // secondaryDiagonal2
+        matrix[i + 1][j].gray * kernel1[1][0] +
+        // mainDiagonal2
+        matrix[i + 1][j + 1].gray * kernel1[1][1]
+        )
+        
+        const G2 = (
+        // mainDiagonal1
+        matrix[i][j].gray * kernel2[0][0] +
+        // secondaryDiagonal1   
+        matrix[i][j + 1].gray * kernel2[0][1] +
+        // secondaryDiagonal2
+        matrix[i + 1][j].gray * kernel2[1][0] +
+        // mainDiagonal2
+        matrix[i + 1][j + 1].gray * kernel2[1][1]
+        )
 
-       
+        const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
 
+        const index = (i * width + j) * 4;
+        output[index] = magnitude;
+        output[index + 1] = magnitude;
+        output[index + 2] = magnitude;
+        output[index + 3] = data[index + 3];
 
+        row.push(magnitude);
       }
-
-    
+      magnitudeMatrix.push(row);    
     }
+    /*
+    const minMagnitude = Math.min(...magnitudeMatrix.flat());
+    const maxMagnitude = Math.max(...magnitudeMatrix.flat());
+    const divisor = maxMagnitude - minMagnitude || 1;
+
+    for (let i = 0; i < magnitudeMatrix.length; i++) {
+      for (let j = 0; j < magnitudeMatrix[0].length; j++) {
+        const magnitude = magnitudeMatrix[i][j];
+        const normalized = ((magnitude - minMagnitude) / divisor) * 255;
+
+        const index = (i * width + j) * 4;
+        output[index] = output[index + 1] = output[index + 2] = normalized;
+        output[index + 3] = 255;
+      }
+    }*/
 
     const resultImage = new ImageData(output, width, height);
     context.putImageData(resultImage, 0, 0);
