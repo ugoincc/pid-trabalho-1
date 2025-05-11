@@ -92,6 +92,21 @@ function transformDataVectorToMatrix(data, width, height) {
   return matrix;
 }
 
+function getMinMax(matrix) {
+  let min = Infinity;
+  let max = -Infinity;
+
+  for (let i = 0; i < matrix.length; i++) {
+    for (let j = 0; j < matrix[i].length; j++) {
+      const val = matrix[i][j];
+      if (val < min) min = val;
+      if (val > max) max = val;
+    }
+  }
+
+  return { min, max };
+}
+
 function invert_color() {
   const canvas = document.createElement("canvas");
   canvas.classList.add("styled-canva");
@@ -183,31 +198,24 @@ function applyRobertsFilter() {
 
         const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
 
-        const index = (i * width + j) * 4;
-        output[index] = magnitude;
-        output[index + 1] = magnitude;
-        output[index + 2] = magnitude;
-        output[index + 3] = data[index + 3];
-
         row.push(magnitude);
       }
       magnitudeMatrix.push(row);    
     }
-    /*
-    const minMagnitude = Math.min(...magnitudeMatrix.flat());
-    const maxMagnitude = Math.max(...magnitudeMatrix.flat());
+    
+    const { min: minMagnitude, max: maxMagnitude } = getMinMax(magnitudeMatrix);
     const divisor = maxMagnitude - minMagnitude || 1;
 
     for (let i = 0; i < magnitudeMatrix.length; i++) {
-      for (let j = 0; j < magnitudeMatrix[0].length; j++) {
+      for (let j = 0; j < magnitudeMatrix[0].length ; j++) {
         const magnitude = magnitudeMatrix[i][j];
-        const normalized = ((magnitude - minMagnitude) / divisor) * 255;
+        const normalized = Math.round(((magnitude - minMagnitude) / divisor) * 255);
 
         const index = (i * width + j) * 4;
         output[index] = output[index + 1] = output[index + 2] = normalized;
-        output[index + 3] = 255;
+        output[index + 3] = 255; 
       }
-    }*/
+    }
 
     const resultImage = new ImageData(output, width, height);
     context.putImageData(resultImage, 0, 0);
