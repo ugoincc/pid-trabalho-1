@@ -306,7 +306,7 @@ function applySobelFilter() {
 
     const downloadContainer = document.querySelector(".download-container");
     downloadContainer.innerHTML = "";
-    const downloadLink = createDownloadLink(canvas, "roberts_filtered.png");
+    const downloadLink = createDownloadLink(canvas, "sobel_filtered.png");
     downloadContainer.appendChild(downloadLink);
   };
 }
