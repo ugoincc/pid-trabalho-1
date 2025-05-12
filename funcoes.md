@@ -55,11 +55,11 @@
                Matriz Resultante -> [268.7]
 
 
-### Prewitt
+# ♦ Prewitt
 
-### Sobel
+# ♦ Sobel
 
-### Log
+# ♦ Log
 
 
 

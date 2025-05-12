@@ -42,10 +42,10 @@ function handleImageFunction(selectedFunction) {
       applyRobertsFilter();
       break;
     case "fun3":
-      applyFunction3();
+      
       break;
     case "fun4":
-      applyFunction4();
+      applySobelFilter()
       break;
     default:
       const para = document.createElement("p");
@@ -227,6 +227,90 @@ function applyRobertsFilter() {
     downloadContainer.appendChild(downloadLink);
   };
 }
+
+function convolve(kernel, matrix, x, y){
+    let acumulator = 0;
+    const tam = 3;
+    for(let i = 0; i < tam; i++){
+      for(let j = 0; j < tam; j++){
+        acumulator += kernel[i][j] * matrix[i + y][j + x].gray;
+      }
+    }
+    return acumulator;
+}
+
+function applySobelFilter() {
+  const canvas = document.createElement("canvas");
+  canvas.classList.add("styled-canva");
+  const context = canvas.getContext("2d");
+  const img = new Image();
+  img.src = URL.createObjectURL(curFile);
+
+  img.onload = () => {
+    canvas.width = img.width;
+    canvas.height = img.height;
+    context.drawImage(img, 0, 0);
+
+    const width = canvas.width;
+    const height = canvas.height;
+
+    const imageData = context.getImageData(0, 0, width, height);
+    const data = imageData.data;
+    const output = new Uint8ClampedArray(data.length);
+    const matrix = transformDataVectorToMatrix(data, width, height);
+
+    const kernel1 = [
+      [-1, 0, 1],
+      [-2, 0, 2],
+      [-1, 0, 1],
+    ];
+
+    const kernel2 = [
+      [-1, -2, -1],
+      [0, 0, 0],
+      [1, 2, 1],
+    ];
+
+    const magnitudeMatrix = [];
+    for (let i = 0; i < height - 2; i++) {
+      const row = [];
+      for(let j = 0; j < width - 2; j++){
+        const G1 = convolve(kernel1, matrix, j, i);
+
+        const G2 = convolve(kernel2, matrix, j, i);
+        
+        const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
+
+        row.push(magnitude);
+      }
+      magnitudeMatrix.push(row);    
+    }
+    
+    const { min: minMagnitude, max: maxMagnitude } = getMinMax(magnitudeMatrix);
+    const divisor = maxMagnitude - minMagnitude || 1;
+
+    for (let i = 0; i < magnitudeMatrix.length; i++) {
+      for (let j = 0; j < magnitudeMatrix[0].length ; j++) {
+        const magnitude = magnitudeMatrix[i][j];
+        const normalized = Math.round(((magnitude - minMagnitude) / divisor) * 255);
+
+        const index = (i * width + j) * 4;
+        output[index] = output[index + 1] = output[index + 2] = normalized;
+        output[index + 3] = 255; 
+      }
+    }
+
+    const resultImage = new ImageData(output, width, height);
+    context.putImageData(resultImage, 0, 0);
+    preview.appendChild(canvas);
+
+    const downloadContainer = document.querySelector(".download-container");
+    downloadContainer.innerHTML = "";
+    const downloadLink = createDownloadLink(canvas, "roberts_filtered.png");
+    downloadContainer.appendChild(downloadLink);
+  };
+}
+
 
 function applyFunction3() {
   const alteredImg = document.createElement("img");
