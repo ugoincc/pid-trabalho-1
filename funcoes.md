@@ -97,6 +97,6 @@ A máscara ou kernel Laplaciano é uma matriz que pode ser aplicada a uma imagem
 
 ### Como o Filtro Laplaciano Funciona 🛠️
 
-**Convolução:** O filtro Laplaciano é aplicado à imagem através da operação de convolução, onde a máscara é movida pixel por pixel, multiplicando os valores da máscara pelos valores da imagem em cada posição e somando o resultado.
+**Convolução:** O filtro Laplaciano é aplicado à imagem através da operação de convolução, Para cada pixel da imagem, multiplicamos os valores dos pixels vizinhos definido em uma região da imagem pelos valores correspondentes da máscara (kernel). Depois, somamos todos os resultados dessa multiplicação.
 
 **Realce de Bordas:** Como ele calcula a segunda derivada, o filtro Laplaciano destaca regiões com grandes mudanças de intensidade, que são as bordas da imagem 🔍.
