@@ -36,7 +36,7 @@ function handleImageFunction(selectedFunction) {
   preview.innerHTML = "";
   switch (selectedFunction) {
     case "fun1":
-      invert_color();
+      applyMedianFilter();
       break;
     case "fun2":
       applyRobertsFilter();
@@ -63,6 +63,7 @@ function createDownloadLink(canvas, filename = "imagem.png") {
 
   return downloadLink;  
 }
+
 // Funcao para transformar o vetor de dados em uma matriz de pixels, onde cada pixel e um objeto com propriedades red, green, blue e gray
 // pre-condicao: data e um vetor de dados de imagem e width e height sao as dimensoes da imagem
 // pos-condicao: retorna uma matriz de pixels
@@ -107,7 +108,20 @@ function getMinMax(matrix) {
   return { min, max };
 }
 
-function invert_color() {
+function findMedian(matrix, i, j) {
+  const values = [];
+  for (let x = -1; x < 2; x++) {
+    for (let y = -1; y < 2; y++) {
+      const pixel = matrix[i + x][j + y];
+      values.push(pixel.gray);
+    }
+  }
+  values.sort((a, b) => a - b);
+  const median = Math.round(values[Math.floor(values.length / 2)]);
+  return median
+}
+
+function applyMedianFilter() {
   const canvas = document.createElement("canvas");
   canvas.classList.add("styled-canva");
   const context = canvas.getContext("2d");
@@ -118,23 +132,52 @@ function invert_color() {
     canvas.width = img.width;
     canvas.height = img.height;
     context.drawImage(img, 0, 0);
-
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    const width = canvas.width;
+    const height = canvas.height;
+    const imageData = context.getImageData(0, 0, width, height);
     const data = imageData.data;
+    const output = new Uint8ClampedArray(data.length);
+    const matrix = transformDataVectorToMatrix(data, width, height);
 
-    // Inverte as cores
-    for (let i = 0; i < data.length; i += 4) {
-      data[i] = 255 - data[i]; // Red
-      data[i + 1] = 255 - data[i + 1]; // Green
-      data[i + 2] = 255 - data[i + 2]; // Blue
+    for (let i = 1; i < height - 3; i++) {
+      for (let j = 1; j < width - 3; j++) {
+        const med = findMedian(matrix, i+1, j+1); 
+        console.log(med);
+
+        const index = ((i+1) * width + (j+1)) * 4; // Corrigido para acessar o índice correto
+        output[index] = med;      // Atribuindo a mediana no valor R
+        output[index + 1] = med;  // Atribuindo a mediana no valor G
+        output[index + 2] = med;  // Atribuindo a mediana no valor B
+        output[index + 3] = 255;  // Mantendo o alfa como 255 (totalmente opaco)
+      }
     }
+    
+    /*
+    const outputMatrix = transformDataVectorToMatrix(output, width, height);
+    const { min: minGray, max: maxGray } = getMinMax(outputMatrix);
 
-    context.putImageData(imageData, 0, 0);
+    const divisor = maxGray - minGray || 1;
+    for (let i = 0; i < outputMatrix.length - 3; i++) {
+      for (let j = 0; j < outputMatrix[0].length- 3; j++) {
+        const gray = outputMatrix[i][j].gray;
+        const normalized = Math.round(((gray - minGray) / divisor) * 255);
+
+        const index = ((i+1) * width + (j+1)) * 4; // Corrigido para acessar o índice correto
+        output[index] = normalized;    // Atribuindo valor normalizado no canal R
+        output[index + 1] = normalized; // Atribuindo valor normalizado no canal G
+        output[index + 2] = normalized; // Atribuindo valor normalizado no canal B
+        output[index + 3] = 255;        // Mantendo o alfa como 255
+      }
+    }
+    */
+
+    const resultImage = new ImageData(output, width, height);
+    context.putImageData(resultImage, 0, 0);
     preview.appendChild(canvas);
 
     const downloadContainer = document.querySelector(".download-container");
     downloadContainer.innerHTML = "";
-    const downloadLink = createDownloadLink(canvas, "processed_image.png");
+    const downloadLink = createDownloadLink(canvas, "roberts_filtered.png");
     downloadContainer.appendChild(downloadLink);
   };
 }
@@ -312,22 +355,4 @@ function applySobelFilter() {
 }
 
 
-function applyFunction3() {
-  const alteredImg = document.createElement("img");
-  alteredImg.src = URL.createObjectURL(curFile);
-  alteredImg.alt = alteredImg.title;
-  preview.appendChild(alteredImg);
-  const para = document.createElement("p");
-  para.textContent = "Função 3 aplicada!";
-  preview.appendChild(para);
-}
 
-function applyFunction4() {
-  const alteredImg = document.createElement("img");
-  alteredImg.src = URL.createObjectURL(curFile);
-  alteredImg.alt = alteredImg.title;
-  preview.appendChild(alteredImg);
-  const para = document.createElement("p");
-  para.textContent = "Função 4 aplicada!";
-  preview.appendChild(para);
-}
