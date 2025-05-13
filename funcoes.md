@@ -32,6 +32,7 @@ A limiarização gaussiana utiliza uma **média ponderada** com base em uma fun�
 **Robustez a Ruído:**  
 É mais robusta a ruídos e outliers do que a limiarização por média, pois o peso reduzido dos pixels distantes minimiza sua influência no resultado.
 
+Para o desenvolvimento deste trabalho foi escolhido implementar a técnica Limiarização adaptativa Gaussiana.
 # Escala de Cinza
 
 ## Composição de Imagens Coloridas
@@ -66,4 +67,6 @@ Esta fórmula atribui diferentes pesos a cada canal de cor:
 - O canal azul recebe o menor peso (0.114)
 
 Ao aplicar essa ponderação, a escala de cinza resultante preserva melhor a percepção humana de luminosidade da imagem original.
+
+## Filtro Passa-Alta Básico
 
