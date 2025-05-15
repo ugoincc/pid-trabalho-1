@@ -103,9 +103,12 @@ A máscara ou kernel Laplaciano é uma matriz que pode ser aplicada a uma imagem
 
 ## 🏋️ Filtro Passa-Alto Reforçado
 Um filtro passa-alta de alto reforço (High-Boost Filter) em processamento de imagens é uma técnica de nitidez que realça os detalhes finos e as bordas de uma imagem, ao mesmo tempo em que preserva parte das informações de baixa frequência (o conteúdo mais suave ou de fundo) da imagem original. Ele se diferencia de um filtro passa-alta básico, que tende a suprimir significativamente as baixas frequências.
-O filtro passa-alta básico realça apenas as bordas e detalhes, subtraindo uma versão suavizada (ou de baixa frequência) da imagem original. Isso pode resultar numa imagem com bordas muito destacadas, mas que perde parte do conteúdo visual original, ficando com aparência "fantasma" ou sem profundidade.
+
+O filtro passa-alta básico realça apenas as bordas e detalhes, subtraindo uma versão suavizada (ou de baixa frequência) da imagem original. Isso pode resultar numa imagem com bordas muito destacadas, mas que perde parte do conteúdo visual original, ficando com aparência **"fantasma"** ou sem profundidade.
+
 Para contornar isso, o filtro de alto reforço soma de volta uma parte da imagem original para preservar os detalhes gerais e melhorar a qualidade visual. Este tipo de filtro combina a imagem original com um filtro passa-alta para destacar ainda mais as bordas e detalhes, mantendo também as informações da imagem original.
-Como funciona o filtro passa-alta de alto reforço:
+
+### Como funciona o filtro passa-alta de alto reforço:
 O filtro passa-alta de alto reforço (também conhecido como high-boost filter) é baseado na seguinte fórmula:
 g(x,y) = A × f(x,y) - ∇²f(x,y)
 Onde:
