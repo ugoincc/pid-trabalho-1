@@ -100,3 +100,77 @@ A máscara ou kernel Laplaciano é uma matriz que pode ser aplicada a uma imagem
 **Convolução:** O filtro Laplaciano é aplicado à imagem através da operação de convolução, Para cada pixel da imagem, multiplicamos os valores dos pixels vizinhos definido em uma região da imagem pelos valores correspondentes da máscara (kernel). Depois, somamos todos os resultados dessa multiplicação.
 
 **Realce de Bordas:** Como ele calcula a segunda derivada, o filtro Laplaciano destaca regiões com grandes mudanças de intensidade, que são as bordas da imagem 🔍.
+
+## 🏋️ Filtro Passa-Alto Reforçado
+Um filtro passa-alta de alto reforço (High-Boost Filter) em processamento de imagens é uma técnica de nitidez que realça os detalhes finos e as bordas de uma imagem, ao mesmo tempo em que preserva parte das informações de baixa frequência (o conteúdo mais suave ou de fundo) da imagem original. Ele se diferencia de um filtro passa-alta básico, que tende a suprimir significativamente as baixas frequências.
+O filtro passa-alta básico realça apenas as bordas e detalhes, subtraindo uma versão suavizada (ou de baixa frequência) da imagem original. Isso pode resultar numa imagem com bordas muito destacadas, mas que perde parte do conteúdo visual original, ficando com aparência "fantasma" ou sem profundidade.
+Para contornar isso, o filtro de alto reforço soma de volta uma parte da imagem original para preservar os detalhes gerais e melhorar a qualidade visual. Este tipo de filtro combina a imagem original com um filtro passa-alta para destacar ainda mais as bordas e detalhes, mantendo também as informações da imagem original.
+Como funciona o filtro passa-alta de alto reforço:
+O filtro passa-alta de alto reforço (também conhecido como high-boost filter) é baseado na seguinte fórmula:
+g(x,y) = A × f(x,y) - ∇²f(x,y)
+Onde:
+
+g(x,y) é a imagem resultante
+f(x,y) é a imagem original
+∇²f(x,y) é o operador laplaciano (que detecta bordas)
+A é o fator de reforço (geralmente A > 1)
+
+Características principais da implementação:
+
+Conversão para escala de cinza: Mantive a abordagem de primeiro converter a imagem para escala de cinza, conforme sua preferência.
+Kernel Laplaciano: Utiliza o mesmo kernel do filtro passa-alta básico:
+0  -1   0
+-1   4  -1
+0  -1   0
+
+Fator de alto reforço (A): O valor padrão é 1.5, que você pode ajustar conforme necessário:
+
+Se A = 1, o resultado é uma imagem com bordas realçadas
+Se A > 1, você obtém uma imagem original somada com suas bordas realçadas
+Quanto maior o valor de A, mais próxima da imagem original será a saída, porém com bordas mais destacadas
+
+Processo:
+
+1. Multiplica a imagem original pelo fator A
+2. Subtrai o resultado do filtro laplaciano
+3. Normaliza os valores para garantir que estejam no intervalo [0, 255]
+
+## 📏 Filtro Passa-Baixa Média
+
+O filtro passa-baixa média é utilizado para suavizar uma imagem, reduzir o ruído e diminuir os detalhes finos. Ele funciona substituindo o valor de cada pixel na imagem pelo valor médio dos pixels em sua vizinhança.
+
+---
+
+### Como Funciona
+
+### Máscara de Média (Kernel)
+
+O filtro de média é definido por uma **máscara de convolução (kernel)** onde todos os elementos têm o mesmo valor, e a soma desses valores é igual a 1 (ou o kernel é normalizado dividindo cada elemento pelo número total de elementos).  
+O tamanho da máscara geralmente é pequeno e ímpar (por exemplo, 3×3, 5×5).
+
+### Exemplo de uma máscara de média 5×5 (normalizada):
+
+1/25 1/25 1/25 1/25 1/25
+1/25 1/25 1/25 1/25 1/25
+1/25 1/25 1/25 1/25 1/25
+1/25 1/25 1/25 1/25 1/25
+1/25 1/25 1/25 1/25 1/25
+
+### Convolução
+
+A máscara de média é deslizada sobre cada pixel da imagem de entrada. Para cada posição da máscara:
+
+1. Os valores dos pixels da imagem original que se sobrepõem aos elementos da máscara são multiplicados pelos respectivos valores da máscara (que são todos iguais).
+2. Os resultados dessas multiplicações são somados.
+3. Essa soma (que é a **média** dos valores dos pixels da vizinhança) se torna o **novo valor do pixel central** na imagem de saída.
+
+---
+
+### Efeito na Imagem
+
+A aplicação de um filtro passa-baixa de média resulta em uma imagem onde:
+
+- O **ruído aleatório** (variações de alta frequência) é reduzido, pois os valores dos pixels ruidosos são suavizados pela média de seus vizinhos.
+- Os **detalhes finos** da imagem são borrados ou perdidos, pois seus valores são misturados com os valores dos pixels vizinhos.
+- As **bordas da imagem** ficam menos nítidas, pois a transição abrupta de intensidade é suavizada pela média.
+- A imagem como um todo tende a parecer **mais embaçada ou com menos contraste local**.
