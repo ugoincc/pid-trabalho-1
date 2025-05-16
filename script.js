@@ -114,6 +114,9 @@ function convertFloat32ToUint8Clamped(output){
   return outputUint8Clamped;
 }
 
+// Funcao para encontrar a mediana de um pixel em uma matriz 5x5
+// pre-condicao: matriz e uma matriz de pixels e i e j sao as coordenadas do pixel
+// pos-condicao: retorna a mediana dos valores dos pixels vizinhos
 function encontrarMediana(matriz, i, j) {
   const valores = [];
   for (let y = 0; y < 5; y++) {
@@ -127,7 +130,10 @@ function encontrarMediana(matriz, i, j) {
   return mediana;
 }
 
-// Revisao de Conceito Basico
+// Funcao para aplicar o filtro de escala de cinza
+// pre-condicao: vetorPixelsRGBA e um vetor de dados de imagem e pixelsConvertidos e um vetor de dados de imagem vazio
+// pos-condicao: retorna o vetor de dados de imagem convertido para escala de cinza
+// A funcao percorre o vetor de dados de imagem e aplica a formula de conversao para escala de cinza
 function aplicarEscalaCinza(vetorPixelsRGBA, pixelsConvertidos) {
 
     // Convercao para Escala de Cinza
@@ -149,6 +155,10 @@ function aplicarEscalaCinza(vetorPixelsRGBA, pixelsConvertidos) {
     }
 }
 
+// Funcao para aplicar o filtro de mediana
+// pre-condicao: Nenhuma
+// pos-condicao: Aplica o filtro de mediana na imagem e exibe o resultado
+// A funcao percorre a imagem e aplica o filtro de mediana em cada pixel
 function aplicarFiltroMediana() {
   const canvas = document.createElement("canvas");
   canvas.classList.add("styled-canva");
