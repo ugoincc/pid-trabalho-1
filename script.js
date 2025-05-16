@@ -116,8 +116,8 @@ function convertFloat32ToUint8Clamped(output){
 
 function encontrarMediana(matriz, i, j) {
   const valores = [];
-  for (let y = 0; y < 3; y++) {
-    for (let x = 0; x < 3; x++) {
+  for (let y = 0; y < 5; y++) {
+    for (let x = 0; x < 5; x++) {
       const pixel = matriz[i + y][j + x];
       valores.push(pixel.vermelho);
     }
@@ -172,22 +172,16 @@ function aplicarFiltroMediana() {
     // -------------------- A matriz recebe os pixels em escala de cinza ------------------------- //
     const matriz = transformarVetorMatriz(pixelsConvertidos, largura, altura);
 
-    for (let i = 1; i < altura - 3; i++) {
-      for (let j = 1; j < largura - 3; j++) {
+    for (let i = 1; i < altura -4; i++) {
+      for (let j = 1; j < largura - 4; j++) {
 
         const mediana = encontrarMediana(matriz, i, j); 
 
-        console.log(mediana);
         const index = ((i+1) * largura + (j+1)) * 4; 
         pixelsConvertidos[index] = mediana;      
         pixelsConvertidos[index + 1] = mediana;  
         pixelsConvertidos[index + 2] = mediana;  
         pixelsConvertidos[index + 3] = 255; // ignorando a opacidade 
-
-        console.log(pixelsConvertidos[index]);
-        console.log(pixelsConvertidos[index + 1]);
-        console.log(pixelsConvertidos[index + 2]);
-        console.log(pixelsConvertidos[index + 3]);
       }
     }
 
