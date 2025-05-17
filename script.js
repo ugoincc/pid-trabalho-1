@@ -42,9 +42,10 @@ function handleImageFunction(selectedFunction) {
       aplicarFiltroRoberts();
       break;
     case "fun3":
+      //aplicarFiltroPrewitt()
       break;
     case "fun4":
-      //applySobelFilter()
+      aplicarFiltroSobel();
       break;
     default:
       const para = document.createElement("p");
@@ -318,36 +319,49 @@ function aplicarFiltroRoberts() {
   };
 }
 
-function convolve(kernel, matrix, x, y){
+// Funcao para aplicar a convolucao em uma matriz
+// pre-condicao: kernel e uma matriz de convolucao e matrix e uma matriz de pixels
+// pos-condicao: retorna o valor da convolucao
+// A funcao percorre a matriz e aplica a convolucao em cada pixel
+function aplicarConvolucao(kernel, matrix, x, y){
     let acumulator = 0;
     const tam = 3;
     for(let i = 0; i < tam; i++){
       for(let j = 0; j < tam; j++){
-        acumulator += kernel[i][j] * matrix[i + y][j + x].gray;
+        acumulator += kernel[i][j] * matrix[i + y][j + x].vermelho;
       }
     }
     return acumulator;
 }
 
-function applySobelFilter() {
+// Funcao para aplicar o filtro de Sobel
+// pre-condicao: Nenhuma
+// pos-condicao: Aplica o filtro de Sobel na imagem e exibe o resultado
+// A funcao percorre a imagem e aplica o filtro de Sobel em cada pixel
+function aplicarFiltroSobel() {
   const canvas = document.createElement("canvas");
   canvas.classList.add("styled-canva");
   const context = canvas.getContext("2d");
-  const img = new Image();
-  img.src = URL.createObjectURL(curFile);
+  const imagem = new Image();
+  imagem.src = URL.createObjectURL(curFile);
 
-  img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    context.drawImage(img, 0, 0);
+  imagem.onload = () => {
+    canvas.width = imagem.width;
+    canvas.height = imagem.height;
+    context.drawImage(imagem, 0, 0);
 
-    const width = canvas.width;
-    const height = canvas.height;
+    const largura = canvas.width;
+    const altura = canvas.height;
 
-    const imageData = context.getImageData(0, 0, width, height);
-    const data = imageData.data;
-    const output = new Uint8ClampedArray(data.length);
-    const matrix = transformDataVectorToMatrix(data, width, height);
+    const imageData = context.getImageData(0, 0, largura, altura);
+    const vetorPixelsRGBA = imageData.data;
+    const pixelsConvertidos = new Float32Array(vetorPixelsRGBA.length);
+    
+    // -------------------- Convertendo o vetor extraido para escala de cinza -------------------- //
+    aplicarEscalaCinza(vetorPixelsRGBA, pixelsConvertidos);
+    // -------------------- A matriz recebe os pixels em escala de cinza ------------------------- //
+
+    const matriz = transformarVetorMatriz(pixelsConvertidos, largura, altura);
 
     const kernel1 = [
       [-1, 0, 1],
@@ -357,46 +371,50 @@ function applySobelFilter() {
 
     const kernel2 = [
       [-1, -2, -1],
-      [0, 0, 0],
-      [1, 2, 1],
+      [0,   0,  0],
+      [1,   2,  1],
     ];
 
-    const magnitudeMatrix = [];
-    for (let i = 0; i < height - 2; i++) {
-      const row = [];
-      for(let j = 0; j < width - 2; j++){
-        const G1 = convolve(kernel1, matrix, j, i);
+    const matrizSobel = [];
+    for (let i = 0; i < altura - 2; i++) {
+      const linha = [];
+      for(let j = 0; j < largura - 2; j++){
+        const G1 = aplicarConvolucao(kernel1, matriz, j, i);
 
-        const G2 = convolve(kernel2, matrix, j, i);
+        const G2 = aplicarConvolucao(kernel2, matriz, j, i);
         
         const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
 
-        row.push(magnitude);
+
+        linha.push(magnitude);
       }
-      magnitudeMatrix.push(row);    
+      matrizSobel.push(linha);    
     }
     
-    const { min: minMagnitude, max: maxMagnitude } = getMinMax(magnitudeMatrix);
-    const divisor = maxMagnitude - minMagnitude || 1;
+    const { valorMinimo: valorMinimoSobel, valorMaximo: valorMaximoSobel } = encontrarMaximoMinimo(matrizSobel);
 
-    for (let i = 0; i < magnitudeMatrix.length; i++) {
-      for (let j = 0; j < magnitudeMatrix[0].length ; j++) {
-        const magnitude = magnitudeMatrix[i][j];
-        const normalized = Math.round(((magnitude - minMagnitude) / divisor) * 255);
+    const divisor = valorMaximoSobel - valorMinimoSobel || 1;
 
-        const index = (i * width + j) * 4;
-        output[index] = output[index + 1] = output[index + 2] = normalized;
-        output[index + 3] = 255; 
+    for (let i = 0; i < matrizSobel.length; i++) {
+      for (let j = 0; j < matrizSobel[0].length ; j++) {
+        const magnitude = matrizSobel[i][j];
+        const valorNormalizado = Math.round(((magnitude - valorMinimoSobel) / divisor) * 255);
+
+        const index = (i * largura + j) * 4;
+        pixelsConvertidos[index] = pixelsConvertidos[index + 1] = pixelsConvertidos[index + 2] = valorNormalizado;
+        pixelsConvertidos[index + 3] = 255; 
       }
     }
 
-    const resultImage = new ImageData(output, width, height);
-    context.putImageData(resultImage, 0, 0);
+    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+
+    const imagemResultante = new ImageData(saida, largura, altura);
+    context.putImageData(imagemResultante, 0, 0);
     preview.appendChild(canvas);
 
     const downloadContainer = document.querySelector(".download-container");
     downloadContainer.innerHTML = "";
-    const downloadLink = createDownloadLink(canvas, "sobel_filtered.png");
+    const downloadLink = createDownloadLink(canvas, "imagem-resultante-sobel.png");
     downloadContainer.appendChild(downloadLink);
   };
 }
