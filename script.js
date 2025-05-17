@@ -39,7 +39,7 @@ function handleImageFunction(selectedFunction) {
       aplicarFiltroMediana();
       break;
     case "fun2":
-      
+      aplicarFiltroRoberts();
       break;
     case "fun3":
       break;
@@ -91,22 +91,33 @@ function transformarVetorMatriz(data, largura, altura) {
   return matrix;
 }
 
-function getMinMax(matrix) {
-  let min = Infinity;
-  let max = -Infinity;
+// Funcao para encontrar o valor maximo e minimo de uma matriz
+// pre-condicao: matriz e uma matriz de pixels
+// pos-condicao: retorna o valor maximo e minimo da matriz
+// A funcao percorre a matriz e encontra o valor maximo e minimo
+function encontrarMaximoMinimo(matriz) {
+  let valorMinimo = matriz[0][0];
+  let valorMaximo = matriz[0][0];
 
-  for (let i = 0; i < matrix.length; i++) {
-    for (let j = 0; j < matrix[i].length; j++) {
-      const val = matrix[i][j];
-      if (val < min) min = val;
-      if (val > max) max = val;
+  for (let i = 0; i < matriz.length; i++) {
+    for (let j = 0; j < matriz[i].length; j++) {
+      const valor = matriz[i][j];
+      if (valor < valorMinimo) {
+        valorMinimo = valor;
+      }
+      if (valor > valorMaximo) {
+        valorMaximo = valor;
+      }
     }
   }
 
-  return { min, max };
+  return { valorMinimo, valorMaximo };
 }
 
-function convertFloat32ToUint8Clamped(output){
+// Funcao para converter o vetor de dados de Float32 para Uint8ClampedArray
+// pre-condicao: data e um vetor de dados de imagem
+// pos-condicao: retorna uma matriz de pixels em do tipo Uint8ClampedArray
+function converterFloat32ParaUint8Clamped(output){
   const outputUint8Clamped = new Uint8ClampedArray(output.length);
   for (let i = 0; i < output.length; i++) {
     outputUint8Clamped[i] = output[i];
@@ -201,30 +212,39 @@ function aplicarFiltroMediana() {
 
     const downloadContainer = document.querySelector(".download-container");
     downloadContainer.innerHTML = "";
-    const downloadLink = createDownloadLink(canvas, "imagem-resultante-mediana.png");
+    const downloadLink = createDownloadLink(canvas, "imagem-filtrada-mediana.png");
     downloadContainer.appendChild(downloadLink);
   };
 }
 
-function applyRobertsFilter() {
+// Funcao para aplicar o filtro de Roberts
+// pre-condicao: Nenhuma
+// pos-condicao: Aplica o filtro de Roberts na imagem e exibe o resultado
+// A funcao percorre a imagem e aplica o filtro de Roberts em cada pixel
+function aplicarFiltroRoberts() {
   const canvas = document.createElement("canvas");
   canvas.classList.add("styled-canva");
   const context = canvas.getContext("2d");
-  const img = new Image();
-  img.src = URL.createObjectURL(curFile);
+  const imagem = new Image();
+  imagem.src = URL.createObjectURL(curFile);
 
-  img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    context.drawImage(img, 0, 0);
+  imagem.onload = () => {
+    canvas.width = imagem.width;
+    canvas.height = imagem.height;
+    context.drawImage(imagem, 0, 0);
 
-    const width = canvas.width;
-    const height = canvas.height;
+    const largura = canvas.width;
+    const altura = canvas.height;
 
-    const imageData = context.getImageData(0, 0, width, height);
-    const data = imageData.data;
-    const output = new Uint8ClampedArray(data.length);
-    const matrix = transformDataVectorToMatrix(data, width, height);
+    const imageData = context.getImageData(0, 0, largura, altura);
+    const vetorPixelsRGBA = imageData.data;
+    const pixelsConvertidos = new Float32Array(vetorPixelsRGBA.length);
+
+    // -------------------- Convertendo o vetor extraido para escala de cinza -------------------- //
+    aplicarEscalaCinza(vetorPixelsRGBA, pixelsConvertidos);
+    // -------------------- A matriz recebe os pixels em escala de cinza ------------------------- //
+
+    const matrix = transformarVetorMatriz(pixelsConvertidos, largura, altura);
 
     const kernel1 = [
       [-1, 0],
@@ -236,61 +256,64 @@ function applyRobertsFilter() {
       [1, 0],
     ];
 
-    const magnitudeMatrix = [];
-    for (let i = 0; i < height - 1; i++) {
+    const matrizRoberts = [];
+    for (let i = 0; i < altura - 1; i++) {
       const row = [];
-      for(let j = 0; j < width - 1; j++){
+      for(let j = 0; j < largura - 1; j++){
       
         const G1 = (
         // mainDiagonal1
-        matrix[i][j].gray * kernel1[0][0] +
+        matrix[i][j].vermelho * kernel1[0][0] +
         // secondaryDiagonal1   
-        matrix[i][j + 1].gray * kernel1[0][1] +
+        matrix[i][j + 1].vermelho * kernel1[0][1] +
         // secondaryDiagonal2
-        matrix[i + 1][j].gray * kernel1[1][0] +
+        matrix[i + 1][j].vermelho * kernel1[1][0] +
         // mainDiagonal2
-        matrix[i + 1][j + 1].gray * kernel1[1][1]
+        matrix[i + 1][j + 1].vermelho * kernel1[1][1]
         )
         
         const G2 = (
         // mainDiagonal1
-        matrix[i][j].gray * kernel2[0][0] +
+        matrix[i][j].vermelho * kernel2[0][0] +
         // secondaryDiagonal1   
-        matrix[i][j + 1].gray * kernel2[0][1] +
+        matrix[i][j + 1].vermelho * kernel2[0][1] +
         // secondaryDiagonal2
-        matrix[i + 1][j].gray * kernel2[1][0] +
+        matrix[i + 1][j].vermelho * kernel2[1][0] +
         // mainDiagonal2
-        matrix[i + 1][j + 1].gray * kernel2[1][1]
+        matrix[i + 1][j + 1].vermelho * kernel2[1][1]
         )
 
-        const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
+        const valorResultante = Math.sqrt(G1 ** 2 + G2 ** 2);
 
-        row.push(magnitude);
+        row.push(valorResultante);
       }
-      magnitudeMatrix.push(row);    
+      matrizRoberts.push(row);    
     }
     
-    const { min: minMagnitude, max: maxMagnitude } = getMinMax(magnitudeMatrix);
-    const divisor = maxMagnitude - minMagnitude || 1;
+    const { valorMinimo: valorMinimoRoberts, valorMaximo: valorMaximoRoberts } = encontrarMaximoMinimo(matrizRoberts);
 
-    for (let i = 0; i < magnitudeMatrix.length; i++) {
-      for (let j = 0; j < magnitudeMatrix[0].length ; j++) {
-        const magnitude = magnitudeMatrix[i][j];
-        const normalized = Math.round(((magnitude - minMagnitude) / divisor) * 255);
+    const divisor = valorMaximoRoberts - valorMinimoRoberts || 1;
 
-        const index = (i * width + j) * 4;
-        output[index] = output[index + 1] = output[index + 2] = normalized;
-        output[index + 3] = 255; 
+    for (let i = 0; i < matrizRoberts.length; i++) {
+      for (let j = 0; j < matrizRoberts[0].length ; j++) {
+        const magnitude = matrizRoberts[i][j];
+        const valorNormalizado = Math.round(((magnitude - valorMinimoRoberts) / divisor) * 255);
+
+        const index = (i * largura + j) * 4;
+        pixelsConvertidos[index] = pixelsConvertidos[index + 1] = pixelsConvertidos[index + 2] = valorNormalizado;
+        pixelsConvertidos[index + 3] = 255; 
       }
     }
 
-    const resultImage = new ImageData(output, width, height);
-    context.putImageData(resultImage, 0, 0);
+    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+
+    const imagemResultante = new ImageData(saida, largura, altura);
+    context.putImageData(imagemResultante, 0, 0);
     preview.appendChild(canvas);
 
     const downloadContainer = document.querySelector(".download-container");
     downloadContainer.innerHTML = "";
-    const downloadLink = createDownloadLink(canvas, "roberts_filtered.png");
+    const downloadLink = createDownloadLink(canvas, "imagem-filtrada-roberts.png");
     downloadContainer.appendChild(downloadLink);
   };
 }
