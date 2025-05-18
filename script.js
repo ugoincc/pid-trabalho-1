@@ -42,7 +42,7 @@ function handleImageFunction(selectedFunction) {
       aplicarFiltroRoberts();
       break;
     case "fun3":
-      //aplicarFiltroPrewitt()
+      aplicarFiltroPrewitt()
       break;
     case "fun4":
       aplicarFiltroSobel();
@@ -332,6 +332,91 @@ function aplicarConvolucao(kernel, matrix, x, y){
       }
     }
     return acumulator;
+}
+
+// Funcao para aplicar o filtro de Prewitt
+// pre-condicao: Nenhuma
+// pos-condicao: Aplica o filtro de Prewitt na imagem e exibe o resultado
+// A funcao percorre a imagem e aplica o filtro de Prewitt em cada pixel
+function aplicarFiltroPrewitt() {
+  const canvas = document.createElement("canvas");
+  canvas.classList.add("styled-canva");
+  const context = canvas.getContext("2d");
+  const imagem = new Image();
+  imagem.src = URL.createObjectURL(curFile);
+
+  imagem.onload = () => {
+    canvas.width = imagem.width;
+    canvas.height = imagem.height;
+    context.drawImage(imagem, 0, 0);
+
+    const largura = canvas.width;
+    const altura = canvas.height;
+
+    const imageData = context.getImageData(0, 0, largura, altura);
+    const vetorPixelsRGBA = imageData.data;
+    const pixelsConvertidos = new Float32Array(vetorPixelsRGBA.length);
+    
+    // -------------------- Convertendo o vetor extraido para escala de cinza -------------------- //
+    aplicarEscalaCinza(vetorPixelsRGBA, pixelsConvertidos);
+    // -------------------- A matriz recebe os pixels em escala de cinza ------------------------- //
+
+    const matriz = transformarVetorMatriz(pixelsConvertidos, largura, altura);
+
+    const kernel1 = [
+      [-1, 0, 1],
+      [-1, 0, 1],
+      [-1, 0, 1],
+    ];
+
+    const kernel2 = [
+      [1,   1,  1],
+      [0,   0,  0],
+      [-1, -1, -1],
+    ];
+
+    const matrizPrewitt = [];
+    for (let i = 0; i < altura - 2; i++) {
+      const linha = [];
+      for(let j = 0; j < largura - 2; j++){
+        const G1 = aplicarConvolucao(kernel1, matriz, j, i);
+
+        const G2 = aplicarConvolucao(kernel2, matriz, j, i);
+        
+        const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
+
+
+        linha.push(magnitude);
+      }
+      matrizPrewitt.push(linha);    
+    }
+    
+    const { valorMinimo: valorMinimoPrewitt, valorMaximo: valorMaximoPrewitt } = encontrarMaximoMinimo(matrizPrewitt);
+
+    const divisor = valorMaximoPrewitt - valorMinimoPrewitt || 1;
+
+    for (let i = 0; i < matrizPrewitt.length; i++) {
+      for (let j = 0; j < matrizPrewitt[0].length ; j++) {
+        const magnitude = matrizPrewitt[i][j];
+        const valorNormalizado = Math.round(((magnitude - valorMinimoPrewitt) / divisor) * 255);
+
+        const index = (i * largura + j) * 4;
+        pixelsConvertidos[index] = pixelsConvertidos[index + 1] = pixelsConvertidos[index + 2] = valorNormalizado;
+        pixelsConvertidos[index + 3] = 255; 
+      }
+    }
+
+    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+
+    const imagemResultante = new ImageData(saida, largura, altura);
+    context.putImageData(imagemResultante, 0, 0);
+    preview.appendChild(canvas);
+
+    const downloadContainer = document.querySelector(".download-container");
+    downloadContainer.innerHTML = "";
+    const downloadLink = createDownloadLink(canvas, "imagem-resultante-prewitt.png");
+    downloadContainer.appendChild(downloadLink);
+  }
 }
 
 // Funcao para aplicar o filtro de Sobel
