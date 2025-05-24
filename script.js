@@ -68,209 +68,208 @@ function createDownloadLink(canvas, filename = "imagem.png") {
 }
 
 // Função auxiliar para converter para escala de cinza usando fórmula luma
-function converte_escala_de_cinza(imageData) {
-  const data = imageData.data;
-  const width = imageData.width;
-  const height = imageData.height;
+function converte_escala_de_cinza(dadosImagem) {
+  const dados = dadosImagem.data;
+  const largura = dadosImagem.width;
+  const altura = dadosImagem.height;
   
   // Array para armazenar os valores em escala de cinza
-  const grayData = new Uint8Array(width * height);
+  const dadosCinza = new Uint8Array(largura * altura);
   
   // Conversão para escala de cinza usando fórmula luma
-  for (let i = 0, j = 0; i < data.length; i += 4, j++) {
+  for (let i = 0, j = 0; i < dados.length; i += 4, j++) {
     // Y = 0.299R + 0.587G + 0.114B
-    grayData[j] = Math.round(data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114);
+    dadosCinza[j] = Math.round(dados[i] * 0.299 + dados[i + 1] * 0.587 + dados[i + 2] * 0.114);
   }
   
-  return grayData;
+  return dadosCinza;
 }
 
 // Função atualizada de escala de cinza
 function escala_de_cinza() {
-  const canvas = document.createElement("canvas");
-  canvas.classList.add("styled-canva");
-  const context = canvas.getContext("2d");
-  const img = new Image();
-  img.src = URL.createObjectURL(curFile);
+  const tela = document.createElement("canvas");
+  tela.classList.add("styled-canva");
+  const contexto = tela.getContext("2d");
+  const imagem = new Image();
+  imagem.src = URL.createObjectURL(curFile);
   
-  img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    context.drawImage(img, 0, 0);
+  imagem.onload = () => {
+    tela.width = imagem.width;
+    tela.height = imagem.height;
+    contexto.drawImage(imagem, 0, 0);
     
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
+    const dadosImagem = contexto.getImageData(0, 0, tela.width, tela.height);
+    const dados = dadosImagem.data;
     
     // Usa a função auxiliar para converter para escala de cinza
-    const grayData = converte_escala_de_cinza(imageData);
+    const dadosCinza = converte_escala_de_cinza(dadosImagem);
     
     // Aplica os valores de escala de cinza à imagem
-    for (let i = 0, j = 0; i < data.length; i += 4, j++) {
-      data[i] = grayData[j];     // Red
-      data[i + 1] = grayData[j]; // Green
-      data[i + 2] = grayData[j]; // Blue
+    for (let i = 0, j = 0; i < dados.length; i += 4, j++) {
+      dados[i] = dadosCinza[j];     // Vermelho
+      dados[i + 1] = dadosCinza[j]; // Verde
+      dados[i + 2] = dadosCinza[j]; // Azul
       // Não alteramos o canal Alpha (i + 3)
     }
     
-    context.putImageData(imageData, 0, 0);
-    preview.appendChild(canvas);
+    contexto.putImageData(dadosImagem, 0, 0);
+    preview.appendChild(tela);
     
-    const downloadContainer = document.querySelector(".download-container");
-    downloadContainer.innerHTML = "";
-    const downloadLink = createDownloadLink(canvas, "grayscale_image.png");
-    downloadContainer.appendChild(downloadLink);
+    const containerDownload = document.querySelector(".download-container");
+    containerDownload.innerHTML = "";
+    const linkDownload = createDownloadLink(tela, "imagem_escala_cinza.png");
+    containerDownload.appendChild(linkDownload);
   };
 }
 
 // Função atualizada de limiarização adaptativa gaussiana
 function LimiarizacaoGaussiana() {
-  const canvas = document.createElement("canvas");
-  canvas.classList.add("styled-canva");
-  const context = canvas.getContext("2d");
-  const img = new Image();
-  img.src = URL.createObjectURL(curFile);
+  const tela = document.createElement("canvas");
+  tela.classList.add("styled-canva");
+  const contexto = tela.getContext("2d");
+  const imagem = new Image();
+  imagem.src = URL.createObjectURL(curFile);
   
-  img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    context.drawImage(img, 0, 0);
+  imagem.onload = () => {
+    tela.width = imagem.width;
+    tela.height = imagem.height;
+    contexto.drawImage(imagem, 0, 0);
     
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    const width = canvas.width;
-    const height = canvas.height;
+    const dadosImagem = contexto.getImageData(0, 0, tela.width, tela.height);
+    const dados = dadosImagem.data;
+    const largura = tela.width;
+    const altura = tela.height;
     
     // Usa a função auxiliar para converter para escala de cinza
-    const grayData = converte_escala_de_cinza(imageData);
+    const dadosCinza = converte_escala_de_cinza(dadosImagem);
     
     // Parâmetros para a limiarização adaptativa
-    const blockSize = 11; // Tamanho da vizinhança (deve ser ímpar)
+    const tamanhoBloco = 11; // Tamanho da vizinhança (deve ser ímpar)
     const C = 2; // Constante subtraída da média ou média ponderada
     
     // Aplica limiarização adaptativa gaussiana
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const pixelIndex = y * width + x;
-        const pixelValue = grayData[pixelIndex];
+    for (let y = 0; y < altura; y++) {
+      for (let x = 0; x < largura; x++) {
+        const indicePixel = y * largura + x;
+        const valorPixel = dadosCinza[indicePixel];
         
         // Calcula média ponderada gaussiana da vizinhança
-        let weightedSum = 0;
-        let weightSum = 0;
+        let somaPonderada = 0;
+        let somaPesos = 0;
         
-        const halfBlockSize = Math.floor(blockSize / 2);
+        const metadeTamanhoBloco = Math.floor(tamanhoBloco / 2);
         
-        for (let ny = -halfBlockSize; ny <= halfBlockSize; ny++) {
-          for (let nx = -halfBlockSize; nx <= halfBlockSize; nx++) {
-            const neighborY = Math.min(Math.max(y + ny, 0), height - 1);
-            const neighborX = Math.min(Math.max(x + nx, 0), width - 1);
-            const neighborIndex = neighborY * width + neighborX;
+        for (let ny = -metadeTamanhoBloco; ny <= metadeTamanhoBloco; ny++) {
+          for (let nx = -metadeTamanhoBloco; nx <= metadeTamanhoBloco; nx++) {
+            const vizinhoY = Math.min(Math.max(y + ny, 0), altura - 1);
+            const vizinhoX = Math.min(Math.max(x + nx, 0), largura - 1);
+            const indiceVizinho = vizinhoY * largura + vizinhoX;
             
             // Peso gaussiano baseado na distância
-            const distance = Math.sqrt(nx * nx + ny * ny);
-            const sigma = blockSize / 3;
-            const weight = Math.exp(-(distance * distance) / (2 * sigma * sigma));
+            const distancia = Math.sqrt(nx * nx + ny * ny);
+            const sigma = tamanhoBloco / 3;
+            const peso = Math.exp(-(distancia * distancia) / (2 * sigma * sigma));
             
-            weightedSum += grayData[neighborIndex] * weight;
-            weightSum += weight;
+            somaPonderada += dadosCinza[indiceVizinho] * peso;
+            somaPesos += peso;
           }
         }
         
         // Calcula o limiar como média ponderada - C
-        const threshold = Math.round(weightedSum / weightSum) - C;
+        const limiar = Math.round(somaPonderada / somaPesos) - C;
         
         // Aplica o limiar
-        const outputValue = pixelValue > threshold ? 255 : 0;
+        const valorSaida = valorPixel > limiar ? 255 : 0;
         
         // Define o mesmo valor para R, G e B
-        const i = pixelIndex * 4;
-        data[i] = outputValue;     // Red
-        data[i + 1] = outputValue; // Green
-        data[i + 2] = outputValue; // Blue
+        const i = indicePixel * 4;
+        dados[i] = valorSaida;     // Vermelho
+        dados[i + 1] = valorSaida; // Verde
+        dados[i + 2] = valorSaida; // Azul
         // Não alteramos o canal Alpha (i + 3)
       }
     }
     
-    context.putImageData(imageData, 0, 0);
-    preview.appendChild(canvas);
+    contexto.putImageData(dadosImagem, 0, 0);
+    preview.appendChild(tela);
     
-    const downloadContainer = document.querySelector(".download-container");
-    downloadContainer.innerHTML = "";
-    const downloadLink = createDownloadLink(canvas, "adaptive_threshold_image.png");
-    downloadContainer.appendChild(downloadLink);
+    const containerDownload = document.querySelector(".download-container");
+    containerDownload.innerHTML = "";
+    const linkDownload = createDownloadLink(tela, "imagem_limiarizacao_adaptativa.png");
+    containerDownload.appendChild(linkDownload);
   };
 }
 
-
 function filtroPassaAlta() {
-  const canvas = document.createElement("canvas");
-  canvas.classList.add("styled-canva");
-  const context = canvas.getContext("2d");
-  const img = new Image();
-  img.src = URL.createObjectURL(curFile);
+  const tela = document.createElement("canvas");
+  tela.classList.add("styled-canva");
+  const contexto = tela.getContext("2d");
+  const imagem = new Image();
+  imagem.src = URL.createObjectURL(curFile);
   
-  img.onload = () => {
-    canvas.width = img.width;
-    canvas.height = img.height;
-    context.drawImage(img, 0, 0);
+  imagem.onload = () => {
+    tela.width = imagem.width;
+    tela.height = imagem.height;
+    contexto.drawImage(imagem, 0, 0);
     
-    const imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-    const data = imageData.data;
-    const width = canvas.width;
-    const height = canvas.height;
+    const dadosImagem = contexto.getImageData(0, 0, tela.width, tela.height);
+    const dados = dadosImagem.data;
+    const largura = tela.width;
+    const altura = tela.height;
     
     // Usa a função auxiliar para converter para escala de cinza
-    const grayData = converte_escala_de_cinza(imageData);
+    const dadosCinza = converte_escala_de_cinza(dadosImagem);
     
     // Kernel do filtro passa-alta (filtro laplaciano)
-    const kernel = [
+    const mascara = [
       [0, -1, 0],
       [-1, 4, -1],
       [0, -1, 0]
     ];
     
-    const kernelSize = 3;
-    const kernelHalf = Math.floor(kernelSize / 2);
+    const tamanhoMascara = 3;
+    const metadeMascara = Math.floor(tamanhoMascara / 2);
     
-    // Aplica o filtro passa-alta (convolução com o kernel)
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        let sum = 0;
+    // Aplica o filtro passa-alta (convolução com a máscara)
+    for (let y = 0; y < altura; y++) {
+      for (let x = 0; x < largura; x++) {
+        let soma = 0;
         
-        // Aplica o kernel
-        for (let ky = 0; ky < kernelSize; ky++) {
-          for (let kx = 0; kx < kernelSize; kx++) {
-            const pixelY = Math.min(Math.max(y + (ky - kernelHalf), 0), height - 1);
-            const pixelX = Math.min(Math.max(x + (kx - kernelHalf), 0), width - 1);
+        // Aplica a máscara
+        for (let my = 0; my < tamanhoMascara; my++) {
+          for (let mx = 0; mx < tamanhoMascara; mx++) {
+            const pixelY = Math.min(Math.max(y + (my - metadeMascara), 0), altura - 1);
+            const pixelX = Math.min(Math.max(x + (mx - metadeMascara), 0), largura - 1);
             
-            const pixelIndex = pixelY * width + pixelX;
-            const kernelValue = kernel[ky][kx];
+            const indicePixel = pixelY * largura + pixelX;
+            const valorMascara = mascara[my][mx];
             
-            sum += grayData[pixelIndex] * kernelValue;
+            soma += dadosCinza[indicePixel] * valorMascara;
           }
         }
         
         // Adiciona 128 para melhor visualização (áreas planas ficam cinza médio)
-        sum = sum + 128;
+        soma = soma + 128;
         
         // Normaliza o resultado para evitar valores fora do intervalo [0, 255]
-        const outputValue = Math.min(Math.max(Math.round(sum), 0), 255);
+        const valorSaida = Math.min(Math.max(Math.round(soma), 0), 255);
         
         // Aplica o valor filtrado à imagem original
-        const i = (y * width + x) * 4;
-        data[i] = outputValue;     // Red
-        data[i + 1] = outputValue; // Green
-        data[i + 2] = outputValue; // Blue
+        const i = (y * largura + x) * 4;
+        dados[i] = valorSaida;     // Vermelho
+        dados[i + 1] = valorSaida; // Verde
+        dados[i + 2] = valorSaida; // Azul
         // Não alteramos o canal Alpha (i + 3)
       }
     }
     
-    context.putImageData(imageData, 0, 0);
-    preview.appendChild(canvas);
+    contexto.putImageData(dadosImagem, 0, 0);
+    preview.appendChild(tela);
     
-    const downloadContainer = document.querySelector(".download-container");
-    downloadContainer.innerHTML = "";
-    const downloadLink = createDownloadLink(canvas, "highpass_filter_image.png");
-    downloadContainer.appendChild(downloadLink);
+    const containerDownload = document.querySelector(".download-container");
+    containerDownload.innerHTML = "";
+    const linkDownload = createDownloadLink(tela, "imagem_filtro_passa_alta.png");
+    containerDownload.appendChild(linkDownload);
   };
 }
 
