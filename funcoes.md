@@ -3,8 +3,6 @@
 # ♦ Passa-Baixa Mediana
 - **Conceito Principal:** Reduzir ruído preservando bordas (especialmente útil contra ruídos do tipo "sal e pimenta").
 
----
-
 ## 🥾 Passo a Passo
 
 ### 1) O filtro Mediana utiliza uma **janela (máscara)** deslizante, geralmente de tamanho **3x3**:
@@ -18,7 +16,7 @@
   ### 2) A janela é aplicada item por item da seguinte forma:
 
 - **1º Passo:** Coletar os **9 valores** da vizinhança (janela 3x3).
-- 
+  
 - **2º Passo:** Ordenar os valores coletados:
 
 
