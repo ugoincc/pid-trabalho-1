@@ -1,4 +1,4 @@
-# 📒 Documentacao de Funcoes
+# 📒 Documentação de Funções
 
 # ♦ Passa-Baixa Mediana
 - **Conceito Principal:** Reduzir ruído preservando bordas (especialmente útil contra ruídos do tipo "sal e pimenta").
