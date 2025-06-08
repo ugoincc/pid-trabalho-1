@@ -85,6 +85,66 @@ X = Valor a Substituir
 
 
 # ♦ Prewitt
+- **Conceito Principal:** Realçar bordas em imagens (detecção de bordas horizontais e verticais).
+
+---
+
+## 🥾 Passo a Passo
+
+### 1) O filtro Prewitt utiliza duas máscaras/kernel (3x3):
+
+- **Kernel Horizontal (Gx):**
+          [-1 0 1]
+          [-1 0 1]
+          [-1 0 1]
+
+- **Kernel Vertical (Gy):**
+          [1   1  1]
+          [ 0  0  0]
+          [-1 -1 -1]
+  
+### 2) Aplicação das Máscaras
+          Exemplo:
+          [10 20 30]
+          [10 10 10]
+          [40 30 30]
+          
+---
+
+### Aplicação do Kernel Horizontal (Gx):
+          [10 * -1 20 * 0 30 * 1] → [-10 0 30]
+          [10 * -1 10 * 0 10 * 1] → [-10 0 10]
+          [40 * -1 30 * 0 30 * 1] → [-40 0 30]
+
+- Soma total:
+-10 + 0 + 30 + (-10) + 0 + 10 + (-40) + 0 + 30 = 10
+
+**Gx = 10**
+
+---
+
+### Aplicação do Kernel Vertical (Gy):
+          [10 * -1 20 * -1 30 * -1] → [-10 -20 -30]
+          [10 * 0 10 * 0 10 * 0] → [ 0 0 0]
+          [40 * 1 30 * 1 30 * 1] → [ 40 30 30]
+
+- Soma total:
+  **Gy = 40**
+
+---
+
+### 🧮 Cálculo da Magnitude do Gradiente
+Resultado = √(Gx² + Gy²)
+= √(10² + 40²)
+= √(100 + 1600)
+= √1700 ≈ 41.23
+
+---
+### Resultado:
+          [10 20 30]      [10 20    30]
+          [10 X  10]   →  [10 41.23 10]
+          [40 30 30]      [40 30    30]
+
 
 # ♦ Sobel
 
