@@ -198,7 +198,6 @@ Resultado = √(Gx² + Gy²)
 
                Matriz Resultante -> [50.99]
 
-# ♦ Log
 
 
 
