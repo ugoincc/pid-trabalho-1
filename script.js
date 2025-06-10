@@ -1,6 +1,7 @@
 const input = document.querySelector("#imagem");
 const preview = document.querySelector(".single-output");
 
+
 let curFile = null;
 
 input.addEventListener("change", () => {
@@ -372,6 +373,7 @@ function filtroPassaAltaAltoReforco() {
     downloadContainer.appendChild(downloadLink);
   };
 }
+
 
 function filtroPassaBaixaMedia() {
   const canvas = document.createElement("canvas");
