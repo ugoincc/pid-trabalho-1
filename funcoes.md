@@ -1,55 +1,75 @@
-# Exemplo
+## Transformação Logarítmica
 
-Como funciona, qual a operação, metodos, ideia, saída esperada etc...
+### Efeitos Visuais Esperados:
 
-## 10.Transformação Logarítmica:
+- Áreas originalmente escuras ficam mais claras e detalhadas.
 
-Efeitos visuais esperados:
+- Áreas originalmente claras mudam pouco.
 
-Realce de regiões escuras: A transformação logarítmica expande uma faixa estreita de baixos níveis de cinza (pixels escuros) em uma faixa mais ampla de níveis de saída, aumentando o contraste e revelando detalhes antes pouco visíveis nessas áreas.
+- O contraste geral é redistribuído, favorecendo regiões de baixa intensidade.
 
-Compressão de regiões claras: Ao mesmo tempo, comprime a faixa de valores altos (pixels claros), reduzindo o contraste em áreas muito claras.
-
-Visualização de detalhes: É especialmente útil para destacar detalhes em imagens cujos valores de intensidade variam muito, como imagens científicas, médicas ou de satélite.
-
-Redução da dinâmica: A transformação reduz a dinâmica da imagem, ou seja, comprime o intervalo de brilho, tornando a visualização de detalhes em regiões escuras mais fácil.
-
-Resumo visual:
-
-Áreas originalmente escuras ficam mais claras e detalhadas.
-
-Áreas originalmente claras mudam pouco.
-
-O contraste geral é redistribuído, favorecendo regiões de baixa intensidade.
-
-“Essa transformação propicia um realce maior nos pixels de baixa intensidade, ou seja, regiões escuras da imagem.”
-
-Portanto, o resultado esperado é uma imagem com mais detalhes visíveis nas regiões escuras, sem saturar as regiões claras.
-
-## 11.Operações Aritméticas
+## Operações Aritméticas
 
 ### Soma
 
+A adição de imagens é feita pixel a pixel. Cada pixel da nova imagem é o resultado da soma dos pixels correspondentes nas imagens originais.
+
+#### Finalidades:
+
+- Mesclar Imagens
+
+- Aumentar a Nitidez
+
+- Reduzir Ruído
+
+- Realçar Detalhes
+
 ### Subtração
+
+Calcula a diferença de intensidade de pixel entre duas imagens de entrada. O resultado é o valor absoluto da diferença para evitar valores negativos.
+
+#### Finalidades:
+
+- Detecção de movimento
+
+- Detecção de alterações
+
+- Remoção de fundo
+
+- Realce de características específicas
 
 ### Multiplicação
 
+Multiplica os valores de intensidade de pixel de uma imagem pelos valores de pixel de outra imagem (pixel a pixel).
+
+#### Finalidade:
+
+- Correção de sombreamento: Compensar a iluminação não uniforme. Multiplicar a imagem original por uma imagem de "fundo claro" normalizada pode corrigir sombreamentos indesejados.
+
 ### Divisão
 
-## 12.Histograma (Escala de cinza)
+Divide os valores de intensidade de pixel pelos valores de pixel de outra imagem (pixel a pixel). Assim como na multiplicação, é importante lidar com divisões por zero, substituindo-as por um pequeno valor.
 
-O que é um Histograma?
-No contexto de processamento de imagem, um histograma é uma representação gráfica da distribuição de tons (ou cores) em uma imagem. Ele mostra quantos pixels têm um determinado valor de intensidade.
+#### Finalidades:
 
-Eixo X (horizontal): Representa os valores de intensidade dos pixels. Para imagens em escala de cinza, esses valores geralmente variam de 0 (preto puro) a 255 (branco puro).
-Eixo Y (vertical): Representa o número de pixels (ou a frequência) que possuem aquele valor de intensidade.
-Para que serve um histograma?
+- Normalização de iluminação
 
-Análise da distribuição de brilho e contraste: Um histograma pode revelar se uma imagem é muito clara, muito escura, tem baixo contraste (pouca variação de tons) ou alto contraste.
-Ajuste de imagem: Com base no histograma, é possível tomar decisões sobre como melhorar a imagem, como ajustar o brilho, contraste ou aplicar equalização de histograma.
-Segmentação: Em algumas aplicações, a análise do histograma pode ajudar a identificar limites entre diferentes regiões de uma imagem.
-O que o código está fazendo?
+- Realce de textura
 
-## 13.Equalização de Histograma
+### Histograma (Escala de Cinza)
 
-https://cursos.alura.com.br/forum/topico-equalizacao-de-imagem-107044
+Um histograma é uma representação gráfica da distribuição de tons (ou cores) em uma imagem. Ele mostra quantos pixels têm um determinado valor de intensidade.
+
+- Eixo X (horizontal): Representa os valores de intensidade dos pixels. Para imagens em escala de cinza, esses valores geralmente variam de 0 (preto puro) a 255 (branco puro).
+
+- Eixo Y (vertical): Representa o número de pixels (ou a frequência) que possuem aquele valor de intensidade.
+
+#### Finalidade:
+
+- Análise da distribuição de brilho e contraste: Um histograma pode revelar se uma imagem é muito clara, muito escura, tem baixo contraste (pouca variação de tons) ou alto contraste.
+
+### Equalização de Histograma
+
+Equalizar é realçar o contraste da imagem de modo que detalhes que não eram perceptíveis anteriormente se tornem visíveis após a equalização.
+
+Após a equalização, os dados no histograma aparecerão espalhados e a imagem terá um novo contraste.
