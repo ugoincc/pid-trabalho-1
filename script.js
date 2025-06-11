@@ -295,20 +295,26 @@ function aplicarFiltroRoberts() {
 
     const divisor = valorMaximoRoberts - valorMinimoRoberts || 1;
 
+    const novaAltura = matrizRoberts.length;
+    const novaLargura = matrizRoberts[0].length;
+    const resultadoRoberts = new Float32Array(novaAltura * novaLargura * 4);
+
     for (let i = 0; i < matrizRoberts.length; i++) {
       for (let j = 0; j < matrizRoberts[0].length ; j++) {
         const magnitude = matrizRoberts[i][j];
         const valorNormalizado = Math.round(((magnitude - valorMinimoRoberts) / divisor) * 255);
 
-        const index = (i * largura + j) * 4;
-        pixelsConvertidos[index] = pixelsConvertidos[index + 1] = pixelsConvertidos[index + 2] = valorNormalizado;
-        pixelsConvertidos[index + 3] = 255; 
+        const index = (i * novaLargura + j) * 4;
+        resultadoRoberts[index] = resultadoRoberts[index + 1] = resultadoRoberts[index + 2] = valorNormalizado;
+        resultadoRoberts[index + 3] = 255; 
       }
     }
 
-    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+    const saida = converterFloat32ParaUint8Clamped(resultadoRoberts);
 
-    const imagemResultante = new ImageData(saida, largura, altura);
+    const imagemResultante = new ImageData(saida, novaLargura, novaAltura);
+    canvas.width = novaLargura;
+    canvas.height = novaAltura;
     context.putImageData(imagemResultante, 0, 0);
     preview.appendChild(canvas);
 
@@ -393,6 +399,10 @@ function aplicarFiltroPrewitt() {
     
     const { valorMinimo: valorMinimoPrewitt, valorMaximo: valorMaximoPrewitt } = encontrarMaximoMinimo(matrizPrewitt);
 
+    const novaAltura = matrizPrewitt.length;
+    const novaLargura = matrizPrewitt[0].length;
+    const resultadoPrewitt = new Float32Array(novaAltura * novaLargura * 4);
+
     const divisor = valorMaximoPrewitt - valorMinimoPrewitt || 1;
 
     for (let i = 0; i < matrizPrewitt.length; i++) {
@@ -400,15 +410,17 @@ function aplicarFiltroPrewitt() {
         const magnitude = matrizPrewitt[i][j];
         const valorNormalizado = Math.round(((magnitude - valorMinimoPrewitt) / divisor) * 255);
 
-        const index = (i * largura + j) * 4;
-        pixelsConvertidos[index] = pixelsConvertidos[index + 1] = pixelsConvertidos[index + 2] = valorNormalizado;
-        pixelsConvertidos[index + 3] = 255; 
+        const index = (i * novaLargura + j) * 4;
+        resultadoPrewitt[index] = resultadoPrewitt[index + 1] = resultadoPrewitt[index + 2] = valorNormalizado;
+        resultadoPrewitt[index + 3] = 255; 
       }
     }
 
-    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+    const saida = converterFloat32ParaUint8Clamped(resultadoPrewitt);
 
-    const imagemResultante = new ImageData(saida, largura, altura);
+    const imagemResultante = new ImageData(saida, novaLargura, novaAltura);
+    canvas.width = novaLargura;
+    canvas.height = novaAltura;
     context.putImageData(imagemResultante, 0, 0);
     preview.appendChild(canvas);
 
@@ -478,6 +490,10 @@ function aplicarFiltroSobel() {
     
     const { valorMinimo: valorMinimoSobel, valorMaximo: valorMaximoSobel } = encontrarMaximoMinimo(matrizSobel);
 
+    const novaAltura = matrizSobel.length;
+    const novaLargura = matrizSobel[0].length;
+    const resultadoSobel = new Float32Array(novaAltura * novaLargura * 4);
+
     const divisor = valorMaximoSobel - valorMinimoSobel || 1;
 
     for (let i = 0; i < matrizSobel.length; i++) {
@@ -485,16 +501,19 @@ function aplicarFiltroSobel() {
         const magnitude = matrizSobel[i][j];
         const valorNormalizado = Math.round(((magnitude - valorMinimoSobel) / divisor) * 255);
 
-        const index = (i * largura + j) * 4;
-        pixelsConvertidos[index] = pixelsConvertidos[index + 1] = pixelsConvertidos[index + 2] = valorNormalizado;
-        pixelsConvertidos[index + 3] = 255; 
+        const index = (i * novaLargura + j) * 4;
+        resultadoSobel[index] = resultadoSobel[index + 1] = resultadoSobel[index + 2] = valorNormalizado;
+        resultadoSobel[index + 3] = 255; 
       }
     }
 
-    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+    const saida = converterFloat32ParaUint8Clamped(resultadoSobel);
 
-    const imagemResultante = new ImageData(saida, largura, altura);
+    const imagemResultante = new ImageData(saida, novaLargura, novaAltura);
+    canvas.width = novaLargura;
+    canvas.height = novaAltura;
     context.putImageData(imagemResultante, 0, 0);
+    
     preview.appendChild(canvas);
 
     const downloadContainer = document.querySelector(".download-container");
