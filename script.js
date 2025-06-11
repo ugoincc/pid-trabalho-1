@@ -323,7 +323,7 @@ function aplicarFiltroRoberts() {
 // pre-condicao: kernel e uma matriz de convolucao e matrix e uma matriz de pixels
 // pos-condicao: retorna o valor da convolucao
 // A funcao percorre a matriz e aplica a convolucao em cada pixel
-function aplicarConvolucao(kernel, matrix, x, y){
+function aplicarCorrelacao(kernel, matrix, x, y){
     let acumulator = 0;
     const tam = 3;
     for(let i = 0; i < tam; i++){
@@ -379,9 +379,9 @@ function aplicarFiltroPrewitt() {
     for (let i = 0; i < altura - 2; i++) {
       const linha = [];
       for(let j = 0; j < largura - 2; j++){
-        const G1 = aplicarConvolucao(kernel1, matriz, j, i);
+        const G1 = aplicarCorrelacao(kernel1, matriz, j, i);
 
-        const G2 = aplicarConvolucao(kernel2, matriz, j, i);
+        const G2 = aplicarCorrelacao(kernel2, matriz, j, i);
         
         const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
 
@@ -464,9 +464,9 @@ function aplicarFiltroSobel() {
     for (let i = 0; i < altura - 2; i++) {
       const linha = [];
       for(let j = 0; j < largura - 2; j++){
-        const G1 = aplicarConvolucao(kernel1, matriz, j, i);
+        const G1 = aplicarCorrelacao(kernel1, matriz, j, i);
 
-        const G2 = aplicarConvolucao(kernel2, matriz, j, i);
+        const G2 = aplicarCorrelacao(kernel2, matriz, j, i);
         
         const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
 
