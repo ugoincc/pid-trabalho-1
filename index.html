@@ -27,27 +27,45 @@
           <label for="imgUpload"> Escolha uma imagem: </label>
           <input
             type="file"
-            name="imagem"
-            id="imagem"
+            name="image"
+            id="image"
             accept="image/png, image/jpeg"
           />
           <button
             type="button"
             class="custom-button"
-            onclick="document.getElementById('imagem').click();"
+            onclick="document.getElementById('image').click();"
           >
             Selecionar Arquivo
           </button>
+          <div class="upload-container">
+            <label for="imgUpload"> Imagem Secundária: </label>
+            <input
+              type="file"
+              name="image"
+              id="secondaryImage"
+              accept="image/png, image/jpeg"
+            />
+            <button
+              type="button"
+              class="custom-button"
+              onclick="document.getElementById('secondaryImage').click();"
+            >
+              Selecionar Arquivo
+            </button>
+          </div>
         </div>
 
         <div class="select-container">
           <label for="functionSelector">Operação: </label>
           <select id="functionSelector">
             <option value="" selected disabled>Selecione uma operação</option>
-            <option value="fun1">Inversão de Cores</option>
-            <option value="fun2">Função 2</option>
-            <option value="fun3">Função 3</option>
-            <option value="fun4">Função 4</option>
+            <option value="fun1">Transformação Logarítmica</option>
+            <option value="fun2">Soma</option>
+            <option value="fun3">Subtração</option>
+            <option value="fun4">Multiplicação</option>
+            <option value="fun5">Divisão</option>
+            <option value="fun6">Histograma + Equalização</option>
           </select>
         </div>
 
