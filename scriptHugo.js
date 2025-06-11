@@ -1,16 +1,16 @@
+import { handleImageFunction } from "./main.js";
+
 const input = document.querySelector("#image");
 const secondaryInput = document.querySelector("#secondaryImage");
 const preview = document.querySelector(".single-output");
 const functionSelector = document.querySelector("#functionSelector");
 
 const primaryFileNameDisplay = document.createElement("p");
-primaryFileNameDisplay.className =
-  "file-name-display text-sm text-gray-600 mt-1";
+primaryFileNameDisplay.classList = "filename";
 input.parentNode.insertBefore(primaryFileNameDisplay, input.nextSibling);
 
 const secondaryFileNameDisplay = document.createElement("p");
-secondaryFileNameDisplay.className =
-  "file-name-display text-sm text-gray-600 mt-1";
+secondaryFileNameDisplay.className = "filename";
 secondaryInput.parentNode.insertBefore(
   secondaryFileNameDisplay,
   secondaryInput.nextSibling
@@ -99,35 +99,7 @@ function toGrayScale(imageData) {
   return imageData;
 }
 
-function handleImageFunction(selectedFunction) {
-  preview.innerHTML = "";
-  switch (selectedFunction) {
-    case "fun1":
-      log();
-      break;
-    case "fun2":
-      processImageOperation("sum");
-      break;
-    case "fun3":
-      processImageOperation("sub");
-      break;
-    case "fun4":
-      processImageOperation("multiply");
-      break;
-    case "fun5":
-      processImageOperation("divide");
-      break;
-    case "fun6":
-      histogram();
-      break;
-    default:
-      const msg = document.createElement("p");
-      msg.textContent = "Nenhuma função selecionada.";
-      preview.appendChild(msg);
-  }
-}
-
-function processImageOperation(operationType) {
+export function processImageOperation(operationType) {
   if (!curFile || !secondaryFile) {
     console.log("Selecione **duas** imagens para a função.");
     return;
@@ -306,7 +278,7 @@ function drawHistogram(imageData) {
   return c;
 }
 
-function histogram() {
+export function histogram() {
   const { canvas, context, img } = getImg(curFile);
 
   img.onload = () => {
@@ -390,7 +362,7 @@ function equalizeHistogram(imageData) {
   return newImageData;
 }
 
-function log() {
+export function log() {
   const { canvas, context, img } = getImg(curFile);
 
   img.onload = () => {

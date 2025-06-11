@@ -18,6 +18,10 @@ header {
   padding-top: 10px;
 }
 
+.filename {
+  color: #45a049;
+}
+
 body,
 header {
   background: #faf6ed;
