@@ -194,20 +194,30 @@ function aplicarFiltroMediana() {
     // -------------------- A matriz recebe os pixels em escala de cinza ------------------------- //
     const matriz = transformarVetorMatriz(pixelsConvertidos, largura, altura);
 
+    const novaAltura = altura - 4 - 1; // -4 por conta do filtro, -1 para alinhar com indice
+    const novaLargura = largura - 4 - 1;
+    const resultadoMediana = new Float32Array(novaAltura * novaLargura * 4);
+
     for (let i = 1; i < altura -4; i++) {
       for (let j = 1; j < largura - 4; j++) {
 
         const mediana = encontrarMediana(matriz, i, j); 
 
-        const index = ((i+1) * largura + (j+1)) * 4; 
-        pixelsConvertidos[index] = mediana;      
-        pixelsConvertidos[index + 1] = mediana;  
-        pixelsConvertidos[index + 2] = mediana;  
-        pixelsConvertidos[index + 3] = 255; // ignorando a opacidade 
+        const novoI = i - 1;
+        const novoJ = j - 1;
+
+        const index = (novoI * novaLargura + novoJ) * 4;
+        resultadoMediana[index] = resultadoMediana[index + 1] = resultadoMediana[index + 2] = mediana;
+        resultadoMediana[index + 3] = 255;
       }
     }
 
-    const imagemResultante = new ImageData(pixelsConvertidos, largura, altura);
+    const saida = converterFloat32ParaUint8Clamped(resultadoMediana);
+    const imagemResultante = new ImageData(saida, novaLargura, novaAltura);
+
+    canvas.width = novaLargura;
+    canvas.height = novaAltura;
+    
     context.putImageData(imagemResultante, 0, 0);
     preview.appendChild(canvas);
 
