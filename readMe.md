@@ -37,18 +37,18 @@ As funções de filtro e manipulação de imagem estão separadas em módulos (i
 Documentação e informações sobre cada módulo são encontrados nos arquivos <i>'funcoes[nome].md'</i>.
 
     /
-    ├─ index.html<br/>
-    ├─ css/<br/>
-    │ └─ styles.css<br/>
-    ├─ common.js<br/>
-    ├─ main.js/<br/>
-    ├─ scriptKelyton.js<br/>
-    ├─ funcoesKelyton.md<br/>
-    ├─ scriptRenan.js<br/>
-    ├─ funcoesRenan.md<br/>
-    ├─ scriptHugo.js<br/>
-    ├─ funcoesHugo.md<br/>
-    └─ readMe.md<br/>
+    ├─ index.html
+    ├─ css/
+    │ └─ styles.css
+    ├─ common.js
+    ├─ main.js/
+    ├─ scriptKelyton.js
+    ├─ funcoesKelyton.md
+    ├─ scriptRenan.js
+    ├─ funcoesRenan.md
+    ├─ scriptHugo.js
+    ├─ funcoesHugo.md
+    └─ readMe.md
 
 ## Como rodar
 
