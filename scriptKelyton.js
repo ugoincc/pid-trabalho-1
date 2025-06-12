@@ -1,48 +1,4 @@
-import { handleImageFunction } from "./main.js";
-
-const input = document.querySelector("#image");
-const preview = document.querySelector(".single-output");
-
-let curFile = null;
-
-input.addEventListener("change", () => {
-  curFile = input.files[0];
-  updateImageDisplay();
-});
-
-functionSelector.addEventListener("change", () => {
-  if (curFile) {
-    const selectedFunction = functionSelector.value;
-    handleImageFunction(selectedFunction);
-  } else {
-    alert("Selecione uma imagem antes de aplicar uma operação.");
-  }
-});
-
-function updateImageDisplay() {
-  preview.innerHTML = "";
-  const curFile = input.files[0];
-  if (!curFile) {
-    const para = document.createElement("p");
-    para.textContent = "Arquivo não selecionado";
-    preview.appendChild(para);
-  } else {
-    const outputImg = document.createElement("img");
-    outputImg.src = URL.createObjectURL(curFile);
-    outputImg.alt = outputImg.title;
-    preview.appendChild(outputImg);
-  }
-}
-
-function createDownloadLink(canvas, filename = "imagem.png") {
-  const downloadLink = document.createElement("a");
-  downloadLink.href = canvas.toDataURL();
-  downloadLink.download = filename;
-  downloadLink.textContent = "Download da Imagem";
-  downloadLink.classList = "custom-button";
-
-  return downloadLink;
-}
+import { curFile, preview, createDownloadLink } from "./common.js";
 
 // Função auxiliar para converter para escala de cinza usando fórmula luma
 function converte_escala_de_cinza(dadosImagem) {

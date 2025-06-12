@@ -1,48 +1,4 @@
-import { handleImageFunction } from "./main.js";
-
-const input = document.querySelector("#image");
-const preview = document.querySelector(".single-output");
-
-let curFile = null;
-
-input.addEventListener("change", () => {
-  curFile = input.files[0];
-  updateImageDisplay();
-});
-
-functionSelector.addEventListener("change", () => {
-  if (curFile) {
-    const selectedFunction = functionSelector.value;
-    handleImageFunction(selectedFunction);
-  } else {
-    alert("Selecione uma imagem antes de aplicar uma operação.");
-  }
-});
-
-function updateImageDisplay() {
-  preview.innerHTML = "";
-  const curFile = input.files[0];
-  if (!curFile) {
-    const para = document.createElement("p");
-    para.textContent = "Arquivo não selecionado";
-    preview.appendChild(para);
-  } else {
-    const outputImg = document.createElement("img");
-    outputImg.src = URL.createObjectURL(curFile);
-    outputImg.alt = outputImg.title;
-    preview.appendChild(outputImg);
-  }
-}
-
-function createDownloadLink(canvas, filename = "imagem.png") {
-  const downloadLink = document.createElement("a");
-  downloadLink.href = canvas.toDataURL();
-  downloadLink.download = filename;
-  downloadLink.textContent = "Download da Imagem";
-  downloadLink.classList = "custom-button";
-
-  return downloadLink;
-}
+import { curFile, preview, createDownloadLink } from "./common.js";
 
 // Funcao para transformar o vetor de dados em uma matriz de pixels, onde cada pixel e um objeto com propriedades red, green, blue e gray
 // pre-condicao: data e um vetor de dados de imagem e width e height sao as dimensoes da imagem
@@ -128,7 +84,7 @@ function encontrarMediana(matriz, i, j) {
 function aplicarEscalaCinza(vetorPixelsRGBA, pixelsConvertidos) {
   // Convercao para Escala de Cinza
   for (let i = 0; i < vetorPixelsRGBA.length; i += 4) {
-    valorEmCinza =
+    const valorEmCinza =
       vetorPixelsRGBA[i] * 0.299 + // Vermelho
       vetorPixelsRGBA[i + 1] * 0.587 + // Verde
       vetorPixelsRGBA[i + 2] * 0.114; // Azul
@@ -171,19 +127,32 @@ export function aplicarFiltroMediana() {
     // -------------------- A matriz recebe os pixels em escala de cinza ------------------------- //
     const matriz = transformarVetorMatriz(pixelsConvertidos, largura, altura);
 
+    const novaAltura = altura - 4 - 1; // -4 por conta do filtro, -1 para alinhar com indice
+    const novaLargura = largura - 4 - 1;
+    const resultadoMediana = new Float32Array(novaAltura * novaLargura * 4);
+
     for (let i = 1; i < altura - 4; i++) {
       for (let j = 1; j < largura - 4; j++) {
         const mediana = encontrarMediana(matriz, i, j);
 
-        const index = ((i + 1) * largura + (j + 1)) * 4;
-        pixelsConvertidos[index] = mediana;
-        pixelsConvertidos[index + 1] = mediana;
-        pixelsConvertidos[index + 2] = mediana;
-        pixelsConvertidos[index + 3] = 255; // ignorando a opacidade
+        const novoI = i - 1;
+        const novoJ = j - 1;
+
+        const index = (novoI * novaLargura + novoJ) * 4;
+        resultadoMediana[index] =
+          resultadoMediana[index + 1] =
+          resultadoMediana[index + 2] =
+            mediana;
+        resultadoMediana[index + 3] = 255;
       }
     }
 
-    const imagemResultante = new ImageData(pixelsConvertidos, largura, altura);
+    const saida = converterFloat32ParaUint8Clamped(resultadoMediana);
+    const imagemResultante = new ImageData(saida, novaLargura, novaAltura);
+
+    canvas.width = novaLargura;
+    canvas.height = novaAltura;
+
     context.putImageData(imagemResultante, 0, 0);
     preview.appendChild(canvas);
 
@@ -272,6 +241,10 @@ export function aplicarFiltroRoberts() {
 
     const divisor = valorMaximoRoberts - valorMinimoRoberts || 1;
 
+    const novaAltura = matrizRoberts.length;
+    const novaLargura = matrizRoberts[0].length;
+    const resultadoRoberts = new Float32Array(novaAltura * novaLargura * 4);
+
     for (let i = 0; i < matrizRoberts.length; i++) {
       for (let j = 0; j < matrizRoberts[0].length; j++) {
         const magnitude = matrizRoberts[i][j];
@@ -279,18 +252,20 @@ export function aplicarFiltroRoberts() {
           ((magnitude - valorMinimoRoberts) / divisor) * 255
         );
 
-        const index = (i * largura + j) * 4;
-        pixelsConvertidos[index] =
-          pixelsConvertidos[index + 1] =
-          pixelsConvertidos[index + 2] =
+        const index = (i * novaLargura + j) * 4;
+        resultadoRoberts[index] =
+          resultadoRoberts[index + 1] =
+          resultadoRoberts[index + 2] =
             valorNormalizado;
-        pixelsConvertidos[index + 3] = 255;
+        resultadoRoberts[index + 3] = 255;
       }
     }
 
-    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+    const saida = converterFloat32ParaUint8Clamped(resultadoRoberts);
 
-    const imagemResultante = new ImageData(saida, largura, altura);
+    const imagemResultante = new ImageData(saida, novaLargura, novaAltura);
+    canvas.width = novaLargura;
+    canvas.height = novaAltura;
     context.putImageData(imagemResultante, 0, 0);
     preview.appendChild(canvas);
 
@@ -308,7 +283,7 @@ export function aplicarFiltroRoberts() {
 // pre-condicao: kernel e uma matriz de convolucao e matrix e uma matriz de pixels
 // pos-condicao: retorna o valor da convolucao
 // A funcao percorre a matriz e aplica a convolucao em cada pixel
-function aplicarConvolucao(kernel, matrix, x, y) {
+function aplicarCorrelacao(kernel, matrix, x, y) {
   let acumulator = 0;
   const tam = 3;
   for (let i = 0; i < tam; i++) {
@@ -364,9 +339,9 @@ export function aplicarFiltroPrewitt() {
     for (let i = 0; i < altura - 2; i++) {
       const linha = [];
       for (let j = 0; j < largura - 2; j++) {
-        const G1 = aplicarConvolucao(kernel1, matriz, j, i);
+        const G1 = aplicarCorrelacao(kernel1, matriz, j, i);
 
-        const G2 = aplicarConvolucao(kernel2, matriz, j, i);
+        const G2 = aplicarCorrelacao(kernel2, matriz, j, i);
 
         const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
 
@@ -378,6 +353,10 @@ export function aplicarFiltroPrewitt() {
     const { valorMinimo: valorMinimoPrewitt, valorMaximo: valorMaximoPrewitt } =
       encontrarMaximoMinimo(matrizPrewitt);
 
+    const novaAltura = matrizPrewitt.length;
+    const novaLargura = matrizPrewitt[0].length;
+    const resultadoPrewitt = new Float32Array(novaAltura * novaLargura * 4);
+
     const divisor = valorMaximoPrewitt - valorMinimoPrewitt || 1;
 
     for (let i = 0; i < matrizPrewitt.length; i++) {
@@ -387,18 +366,20 @@ export function aplicarFiltroPrewitt() {
           ((magnitude - valorMinimoPrewitt) / divisor) * 255
         );
 
-        const index = (i * largura + j) * 4;
-        pixelsConvertidos[index] =
-          pixelsConvertidos[index + 1] =
-          pixelsConvertidos[index + 2] =
+        const index = (i * novaLargura + j) * 4;
+        resultadoPrewitt[index] =
+          resultadoPrewitt[index + 1] =
+          resultadoPrewitt[index + 2] =
             valorNormalizado;
-        pixelsConvertidos[index + 3] = 255;
+        resultadoPrewitt[index + 3] = 255;
       }
     }
 
-    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+    const saida = converterFloat32ParaUint8Clamped(resultadoPrewitt);
 
-    const imagemResultante = new ImageData(saida, largura, altura);
+    const imagemResultante = new ImageData(saida, novaLargura, novaAltura);
+    canvas.width = novaLargura;
+    canvas.height = novaAltura;
     context.putImageData(imagemResultante, 0, 0);
     preview.appendChild(canvas);
 
@@ -457,9 +438,9 @@ export function aplicarFiltroSobel() {
     for (let i = 0; i < altura - 2; i++) {
       const linha = [];
       for (let j = 0; j < largura - 2; j++) {
-        const G1 = aplicarConvolucao(kernel1, matriz, j, i);
+        const G1 = aplicarCorrelacao(kernel1, matriz, j, i);
 
-        const G2 = aplicarConvolucao(kernel2, matriz, j, i);
+        const G2 = aplicarCorrelacao(kernel2, matriz, j, i);
 
         const magnitude = Math.sqrt(G1 ** 2 + G2 ** 2);
 
@@ -471,6 +452,10 @@ export function aplicarFiltroSobel() {
     const { valorMinimo: valorMinimoSobel, valorMaximo: valorMaximoSobel } =
       encontrarMaximoMinimo(matrizSobel);
 
+    const novaAltura = matrizSobel.length;
+    const novaLargura = matrizSobel[0].length;
+    const resultadoSobel = new Float32Array(novaAltura * novaLargura * 4);
+
     const divisor = valorMaximoSobel - valorMinimoSobel || 1;
 
     for (let i = 0; i < matrizSobel.length; i++) {
@@ -480,19 +465,22 @@ export function aplicarFiltroSobel() {
           ((magnitude - valorMinimoSobel) / divisor) * 255
         );
 
-        const index = (i * largura + j) * 4;
-        pixelsConvertidos[index] =
-          pixelsConvertidos[index + 1] =
-          pixelsConvertidos[index + 2] =
+        const index = (i * novaLargura + j) * 4;
+        resultadoSobel[index] =
+          resultadoSobel[index + 1] =
+          resultadoSobel[index + 2] =
             valorNormalizado;
-        pixelsConvertidos[index + 3] = 255;
+        resultadoSobel[index + 3] = 255;
       }
     }
 
-    const saida = converterFloat32ParaUint8Clamped(pixelsConvertidos);
+    const saida = converterFloat32ParaUint8Clamped(resultadoSobel);
 
-    const imagemResultante = new ImageData(saida, largura, altura);
+    const imagemResultante = new ImageData(saida, novaLargura, novaAltura);
+    canvas.width = novaLargura;
+    canvas.height = novaAltura;
     context.putImageData(imagemResultante, 0, 0);
+
     preview.appendChild(canvas);
 
     const downloadContainer = document.querySelector(".download-container");

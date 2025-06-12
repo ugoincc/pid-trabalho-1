@@ -13,6 +13,8 @@ import {
   aplicarFiltroSobel,
 } from "./scriptRenan.js";
 
+import "./common.js";
+
 export function handleImageFunction(selectedFunction) {
   const preview = document.querySelector(".single-output");
 
