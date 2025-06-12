@@ -41,7 +41,7 @@ Documentação e informações sobre cada módulo são encontrados nos arquivos 
     ├─ css/
     │ └─ styles.css
     ├─ common.js
-    ├─ main.js/
+    ├─ main.js
     ├─ scriptKelyton.js
     ├─ funcoesKelyton.md
     ├─ scriptRenan.js
