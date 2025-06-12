@@ -59,16 +59,41 @@ header {
   display: flex;
   justify-content: center;
   flex-direction: row;
-  gap: 5%;
-  width: 100vw;
+  width: 90vw;
+  border: 2px solid rgba(0, 0, 0, 0.459);
+  border-radius: 8px;
+  margin: 2rem;
+  padding: 1rem;
 }
 
-.select-container,
-.upload-container,
-.download-container {
+.select-container {
+  justify-items: center;
   border-radius: 4px;
   padding: 2px;
   font-size: 1.3rem;
+}
+
+.upload-container {
+  justify-items: center;
+  border-radius: 4px;
+  padding: 2px;
+  font-size: 1.3rem;
+  width: 33%;
+}
+
+.download-container {
+  justify-items: center;
+  border-radius: 4px;
+  padding: 2px;
+  font-size: 1.3rem;
+}
+
+.operation-wrapper {
+  width: 33%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
 }
 
 .upload-container input[type="file"] {
