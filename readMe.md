@@ -1,21 +1,58 @@
 # Processamento de Imagens (HTML + JS)
 
-Este projeto demonstra filtros de imagem (escala de cinza, limiarização, quantização, histograma, passa‑alta e passa‑baixa) usando Canvas e sliders em JavaScript puro.
+<strong>Autores:</strong>
+
+- [Hugo Cordeiro](https://github.com/ugoincc)
+- [Kelyton Lacerda](https://github.com/Kelyton21)
+- [Renan Batalha](https://github.com/renanBatalha)
+
+## Descrição
+
+Este projeto demonstra filtros e técnicas de processamento de imagens usando Canvas em JavaScript puro.
+
+Os filtros abordados neste trabalho são:
+
+1. Limiarização (Threshold)
+2. Escala de Cinza
+3. Passa-Alta básico
+4. Passa-Alta Alto reforço
+5. Passa-Baixa Média (Básico)
+6. Passa-Baixa Mediana
+7. Operador de Roberts
+8. Operador de Prewitt
+9. Operador de Sobel
+10. Tranformação Logarítmica
+11. Operações Aritméticas
+    a. Soma
+    b. Subtração
+    c. Multiplicação
+    d. Divisão
+12. Histograma (Escala de cinza)
+13. Equalização de Histograma
 
 ## Estrutura
 
-/
-├─ index.html<br/>
-├─ script.js<br/>
-├─ css/<br/>
-│ └─ styles.css<br/>
-└─ assets/<br/>
-└─ imagemBase.jpg<br/>
-└─ placeholder.jpg<br/>
+As funções de filtro e manipulação de imagem estão separadas em módulos (i.e './scriptHugo') <i>main.js</i> contém o controlador para chamada das funções e <i>common.js</i> com as funções auxiliares para <i>inputs</i> e <i>download</i> das imagens processadas.
+
+Documentação e informações sobre cada módulo são encontrados nos arquivos <i>'funcoes[nome].md'</i>.
+
+    /
+    ├─ index.html<br/>
+    ├─ css/<br/>
+    │ └─ styles.css<br/>
+    ├─ common.js<br/>
+    ├─ main.js/<br/>
+    ├─ scriptKelyton.js<br/>
+    ├─ funcoesKelyton.md<br/>
+    ├─ scriptRenan.js<br/>
+    ├─ funcoesRenan.md<br/>
+    ├─ scriptHugo.js<br/>
+    ├─ funcoesHugo.md<br/>
+    └─ readMe.md<br/>
 
 ## Como rodar
 
--- Não abrir index.html diretamente, navegadores bloqueiam por padrão a leitura de pixels quando a imagem vem de `file://`. Por isso use um servidor HTTP local:
+Não abrir index.html diretamente, navegadores bloqueiam por padrão a leitura de pixels quando a imagem vem de `file://`. Por isso use um servidor HTTP local:
 
 ### 1. Python 3
 
@@ -54,8 +91,3 @@ http://localhost:8080
 2 - Instale a extensão Live Server<br/>
 3 - Clique em "Go Live" no canto inferior direito<br/>
 4 - O navegador abrirá com a URL do servidor
-
-## Opções:
-
-Para alterar a imagem a ser processada, referenciar o endereço da imagem na linha indicada dentro de "index.html"; <br/>
-Alguns filtros possuem sliders para alterar os parâmetros de visualização;
