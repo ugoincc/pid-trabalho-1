@@ -306,7 +306,7 @@ export function filtroPassaAltaAltoReforco() {
         // - f(x,y) é a imagem original
         // - laplaciano é o componente de alta frequência
         // - A é o fator de amplificação
-        let valorReforçado = fatorAmplificacao * valorOriginal - somaLaplaciano;
+        let valorReforçado = valorOriginal + fatorAmplificacao * somaLaplaciano;
 
         // Normalização do resultado (garantir valores entre 0 e 255)
         dadosResultado[indicePixel] = Math.min(
@@ -344,12 +344,12 @@ export function filtroPassaBaixaMedia() {
   imagem.src = URL.createObjectURL(curFile);
 
   imagem.onload = () => {
-    // Configuração do canvas com dimensões da imagem
+    
     canvas.width = imagem.width;
     canvas.height = imagem.height;
     contexto.drawImage(imagem, 0, 0);
 
-    // Obtenção dos dados da imagem
+    
     const dadosImagem = contexto.getImageData(
       0,
       0,
@@ -360,17 +360,17 @@ export function filtroPassaBaixaMedia() {
     const largura = canvas.width;
     const altura = canvas.height;
 
-    // Conversão para escala de cinza (opcional, dependendo da aplicação)
+    
     const dadosCinza = converte_escala_de_cinza(dadosImagem);
 
-    // Array para armazenar o resultado processado
+    
     const dadosResultado = new Uint8Array(dadosCinza.length);
 
     // Definição do tamanho do kernel (aumentar para maior suavização)
     const tamanhoKernel = 5; // Kernel 5x5 para exemplo
     const meioKernel = Math.floor(tamanhoKernel / 2);
 
-    // Criação do kernel de média (todos os valores têm peso igual)
+    // Criação do kernel de média 
     const kernel = [];
     const pesoTotal = tamanhoKernel * tamanhoKernel;
     const pesoIndividual = 1 / pesoTotal; // Normalização para manter brilho original
@@ -385,7 +385,7 @@ export function filtroPassaBaixaMedia() {
     // Aplicação do filtro de média
     for (let y = 0; y < altura; y++) {
       for (let x = 0; x < largura; x++) {
-        // Índice do pixel atual
+        
         const indicePixel = y * largura + x;
 
         // Cálculo da média dos pixels vizinhos
@@ -404,13 +404,13 @@ export function filtroPassaBaixaMedia() {
               largura - 1
             );
 
-            // Índice do pixel vizinho
+            
             const indiceVizinho = pixelY * largura + pixelX;
 
-            // Valor do kernel na posição atual
+            
             const valorKernel = kernel[ky][kx];
 
-            // Soma ponderada com o kernel
+            
             somaVizinhos += dadosCinza[indiceVizinho] * valorKernel;
           }
         }
@@ -425,14 +425,14 @@ export function filtroPassaBaixaMedia() {
       dados[i] = dadosResultado[j]; // Canal Vermelho
       dados[i + 1] = dadosResultado[j]; // Canal Verde
       dados[i + 2] = dadosResultado[j]; // Canal Azul
-      // O canal Alfa (i + 3) não é alterado
+      
     }
 
-    // Mostra a imagem processada no canvas
+    
     contexto.putImageData(dadosImagem, 0, 0);
     preview.appendChild(canvas);
 
-    // Cria o link para download da imagem processada
+   
     const downloadContainer = document.querySelector(".download-container");
     downloadContainer.innerHTML = "";
     const downloadLink = createDownloadLink(canvas, "imagem_passa_baixa.png");
