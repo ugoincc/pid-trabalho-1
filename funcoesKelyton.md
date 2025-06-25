@@ -110,7 +110,7 @@ Para contornar isso, o filtro de alto reforço soma de volta uma parte da imagem
 
 ### Como funciona o filtro passa-alta de alto reforço:
 O filtro passa-alta de alto reforço (também conhecido como high-boost filter) é baseado na seguinte fórmula:
-g(x,y) = A × f(x,y) - ∇²f(x,y)
+g(x,y) = f(x,y) + A * PA(x,y)
 Onde:
 
 g(x,y) é a imagem resultante
@@ -152,14 +152,14 @@ O filtro de média é definido por uma **máscara de convolução (kernel)** ond
 O tamanho da máscara geralmente é pequeno e ímpar (por exemplo, 3×3, 5×5).
 
 ### Exemplo de uma máscara de média 5×5 (normalizada):
-
+```
 1/25 1/25 1/25 1/25 1/25
 1/25 1/25 1/25 1/25 1/25
 1/25 1/25 1/25 1/25 1/25
 1/25 1/25 1/25 1/25 1/25
 1/25 1/25 1/25 1/25 1/25
-
-### Convolução
+```
+### Correlação
 
 A máscara de média é deslizada sobre cada pixel da imagem de entrada. Para cada posição da máscara:
 
