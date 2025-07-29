@@ -44,7 +44,7 @@ Multiplica os valores de intensidade de pixel de uma imagem pelos valores de pix
 
 #### Finalidade:
 
-- Correção de sombreamento: Compensar a iluminação não uniforme. Multiplicar a imagem original por uma imagem de "fundo claro" normalizada pode corrigir sombreamentos indesejados.
+- Correção de sombreamento: Compensar a iluminação não uniforme. Multiplicar a imagem original por uma imagem de "fundo claro" normalizada pode corrigir sombreamentos indesejados. Pode ser usada para mascaramento, onde uma imagem (a máscara) modula a intensidade da outra. Também para ajustar o brilho de forma não linear ou para aplicar pesos a diferentes regiões da imagem.
 
 ### Divisão
 

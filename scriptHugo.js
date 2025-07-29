@@ -242,18 +242,21 @@ function equalizeHistogram(imageData) {
   const L = 256;
 
   const hist = Array(L).fill(0);
+
   for (let i = 0; i < data.length; i += 4) {
     const grayValue = data[i];
     hist[grayValue]++;
   }
 
   const cdf = Array(L).fill(0);
+
   cdf[0] = hist[0];
   for (let i = 1; i < L; i++) {
     cdf[i] = cdf[i - 1] + hist[i];
   }
 
   let cdfMin = 0;
+
   for (let i = 0; i < L; i++) {
     if (cdf[i] > 0) {
       cdfMin = cdf[i];
@@ -262,6 +265,7 @@ function equalizeHistogram(imageData) {
   }
 
   const mapping = Array(L).fill(0);
+
   for (let i = 0; i < L; i++) {
     mapping[i] = Math.floor(
       ((cdf[i] - cdfMin) / (totalPixels - cdfMin)) * (L - 1)
