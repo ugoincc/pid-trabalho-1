@@ -67,19 +67,19 @@ python3 -m http.server 8000
 
 ### no diretório do projeto:
 
-npx serve .
+`npx serve .`
 
 ### abra no navegador:
 
-http://localhost:5000 (ou a porta indicada pelo serve no console)
+`http://localhost:5000 (ou a porta indicada pelo serve no console)`
 
 ### 3. http-server (Node.js, instalação global)
 
-npm install -g http-server
+`npm install -g http-server`
 
 ### depois:
 
-http-server -c-1
+`http-server -c-1`
 
 ### visite:
 
